@@ -19,3 +19,23 @@ test('derives all four pending model hotspots for 小陈', () => {
     avatarPending: true,
   });
 });
+
+test('returns no pending homepage actions after a member resolves them', () => {
+  const state = {
+    expenses: [{ status: 'closed', paid: ['小陈'], shares: { '小陈': 100 } }],
+    chores: [{ id: 1, owner: '小陈', done: true }],
+    supplies: [
+      { id: 2, quantity: 3, threshold: 2, claimed: false },
+      { id: 3, quantity: 1, threshold: 2, claimed: true },
+    ],
+    rules: [{ id: 4, confirmed: ['小陈'] }],
+  };
+
+  assert.deepEqual(getHomeModelState(state, '小陈'), {
+    debt: 0,
+    choreId: null,
+    supplyId: null,
+    ruleId: null,
+    avatarPending: false,
+  });
+});
