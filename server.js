@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.join(__dirname, 'public');
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.png': 'image/png' };
 
 http.createServer((req, res) => {
   const requested = req.url === '/' ? '/index.html' : req.url.split('?')[0];
