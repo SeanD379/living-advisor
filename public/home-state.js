@@ -15,10 +15,20 @@ function getHomeModelState(state, member) {
   };
 }
 
+function getHomeHotspotState(modelState) {
+  return {
+    room: modelState.avatarPending ? 'active' : 'resolved',
+    kitchen: modelState.supplyId ? 'active' : 'resolved',
+    management: modelState.debt || modelState.choreId || modelState.ruleId ? 'active' : 'resolved',
+    living: 'active',
+  };
+}
+
 if (typeof module !== 'undefined') {
-  module.exports = { getHomeModelState };
+  module.exports = { getHomeModelState, getHomeHotspotState };
 }
 
 if (typeof window !== 'undefined') {
   window.getHomeModelState = getHomeModelState;
+  window.getHomeHotspotState = getHomeHotspotState;
 }

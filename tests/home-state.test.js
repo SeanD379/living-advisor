@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const { getHomeModelState } = require('../public/home-state.js');
+const { getHomeModelState, getHomeHotspotState } = require('../public/home-state.js');
 
 test('derives all four pending model hotspots for 小陈', () => {
   const state = {
@@ -37,5 +37,33 @@ test('returns no pending homepage actions after a member resolves them', () => {
     supplyId: null,
     ruleId: null,
     avatarPending: false,
+  });
+});
+
+test('derives semantic hotspot states from the homepage model state', () => {
+  assert.deepEqual(getHomeHotspotState({
+    debt: 100,
+    choreId: null,
+    supplyId: 2,
+    ruleId: null,
+    avatarPending: true,
+  }), {
+    room: 'active',
+    kitchen: 'active',
+    management: 'active',
+    living: 'active',
+  });
+
+  assert.deepEqual(getHomeHotspotState({
+    debt: 0,
+    choreId: null,
+    supplyId: null,
+    ruleId: null,
+    avatarPending: false,
+  }), {
+    room: 'resolved',
+    kitchen: 'resolved',
+    management: 'resolved',
+    living: 'active',
   });
 });
