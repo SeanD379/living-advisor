@@ -4,18 +4,22 @@ const initial = {
   supplies: [{ id: 1, name: '纸巾', quantity: 1, threshold: 2, unit: '包', place: '客厅柜', claimed: false, history: [] }, { id: 2, name: '垃圾袋', quantity: 4, threshold: 2, unit: '卷', place: '厨房', claimed: false, history: [] }, { id: 3, name: '洗洁精', quantity: 1, threshold: 1, unit: '瓶', place: '水槽下方', claimed: false, history: [] }],
   rules: [{ id: 1, title: '访客与夜间安静规则', text: '工作日 23:00 后请保持公共区域安静；周末可延至 24:00。留宿访客请提前在群内告知。', confirmed: ['小王', '小陈'] }]
 };
-let state = JSON.parse(localStorage.getItem('shared-home-state') || 'null') || initial;
+const createInitialState = createStateFactory(initial);
+let state = JSON.parse(localStorage.getItem('shared-home-state') || 'null') || createInitialState();
 let page = 'home';
 const app = document.querySelector('#app');
 const save = () => localStorage.setItem('shared-home-state', JSON.stringify(state));
 const me = '小陈';
 const money = n => `¥${Number(n).toFixed(2)}`;
 const openExpenses = () => state.expenses.filter(x => x.status === 'open');
+let modalId = 0;
+let modalTrigger = null;
+let removeEscapeListener = null;
 function toast(text) { const el = document.querySelector('#toast'); el.textContent = text; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2100); }
 function go(next) { page = next; document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === next)); render(); }
 function actionButtons() { document.querySelectorAll('[data-action]').forEach(b => b.onclick = () => actions[b.dataset.action](b.dataset.id)); }
-function modal(title, body) { document.querySelector('#modal-root').innerHTML = `<div class="overlay"><section class="modal"><button class="close" aria-label="关闭">×</button><h2>${title}</h2>${body}</section></div>`; document.querySelector('.close').onclick = closeModal; }
-function closeModal() { document.querySelector('#modal-root').innerHTML = ''; }
+function modal(title, body) { modalTrigger = document.activeElement; if (removeEscapeListener) removeEscapeListener(); const headingId = `modal-title-${++modalId}`; document.querySelector('#modal-root').innerHTML = `<div class="overlay"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="${headingId}"><button class="close" aria-label="关闭">×</button><h2 id="${headingId}">${title}</h2>${body}</section></div>`; const closeButton = document.querySelector('.close'); closeButton.onclick = closeModal; const onEscape = event => { if (event.key === 'Escape') closeModal(); }; document.addEventListener('keydown', onEscape); removeEscapeListener = () => document.removeEventListener('keydown', onEscape); closeButton.focus(); }
+function closeModal() { if (removeEscapeListener) removeEscapeListener(); removeEscapeListener = null; document.querySelector('#modal-root').innerHTML = ''; if (modalTrigger?.isConnected) modalTrigger.focus(); modalTrigger = null; }
 function card(icon, title, text, label, action, id) { return `<article class="action-card"><span class="card-icon ${icon}">${icon === 'pay' ? '¥' : icon === 'clean' ? '✦' : icon === 'supply' ? '▣' : '⌁'}</span><div><h3>${title}</h3><p>${text}</p></div>${action ? `<button class="soft-btn" data-action="${action}" data-id="${id || ''}">${label}</button>` : ''}</article>`; }
 function renderHome() {
   const model = getHomeModelState(state, me);
@@ -48,7 +52,7 @@ const actions = {
   'show-supplies'() { modal('公共物品', state.supplies.map(x=>`<div class="supply modal-supply"><span class="supply-pic">${x.name==='纸巾'?'▤':'◒'}</span><div><h3>${x.name}</h3><p>剩余 ${x.quantity} ${x.unit} · 阈值 ${x.threshold} ${x.unit}</p></div><span class="stock ${x.quantity<=x.threshold?'low':''}">${x.quantity<=x.threshold?'待补货':'充足'}</span></div>`).join('')); },
   'show-rules'() { const x=state.rules[0]; modal('室友公约', `<p class="eyebrow">待确认 · V2</p><h3>${x.title}</h3><p class="rule-text">${x.text}</p><p class="progress">确认进度：${x.confirmed.join('、')} ${x.confirmed.length}/3</p>`); },
   swap() { modal('申请换班', `<p class="helper">由接班人确认后，才会更新本周排班。</p><label>换给<select><option>小王</option><option>小李</option></select></label><button class="primary" id="confirm">发送换班请求</button>`); document.querySelector('#confirm').onclick=()=>{closeModal();toast('换班请求已发送，等待室友确认');}; },
-  reset() { localStorage.removeItem('shared-home-state'); state=JSON.parse(JSON.stringify(initial)); render(); toast('演示数据已重置'); }
+  reset() { localStorage.removeItem('shared-home-state'); state=createInitialState(); render(); toast('演示数据已重置'); }
 };
 function purchase(x) { modal('记录补货', `<form id="purchase-form"><label>购买数量<input name="quantity" type="number" value="4" min="1"></label><label>实际花费<input name="amount" type="number" value="24" min="0.01" step="0.01"></label><button class="primary">更新库存并生成 AA 账单</button></form>`); document.querySelector('#purchase-form').onsubmit=e=>{e.preventDefault(); const f=new FormData(e.target), amount=Number(f.get('amount')); x.quantity=Number(f.get('quantity'));x.claimed=false;x.history.unshift({amount,date:'2026-09-12'});state.expenses.unshift({id:Date.now(),name:`${x.name}补货`,amount,payer:me,category:'公共采购',status:'open',paid:[],shares:{'小王':amount/3,'小李':amount/3,'小陈':amount/3},date:'2026-09-12'});save();closeModal();go('expenses');toast('库存已更新，AA 账单已生成');}; }
 render();

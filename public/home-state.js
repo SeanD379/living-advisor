@@ -15,20 +15,25 @@ function getHomeModelState(state, member) {
   };
 }
 
+function createStateFactory(initialState) {
+  return () => JSON.parse(JSON.stringify(initialState));
+}
+
 function getHomeHotspotState(modelState) {
   return {
     room: modelState.avatarPending ? 'active' : 'resolved',
-    kitchen: modelState.supplyId ? 'active' : 'resolved',
-    management: modelState.debt || modelState.choreId || modelState.ruleId ? 'active' : 'resolved',
+    kitchen: modelState.supplyId !== null ? 'active' : 'resolved',
+    management: modelState.debt || modelState.choreId !== null || modelState.ruleId !== null ? 'active' : 'resolved',
     living: 'active',
   };
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { getHomeModelState, getHomeHotspotState };
+  module.exports = { createStateFactory, getHomeModelState, getHomeHotspotState };
 }
 
 if (typeof window !== 'undefined') {
+  window.createStateFactory = createStateFactory;
   window.getHomeModelState = getHomeModelState;
   window.getHomeHotspotState = getHomeHotspotState;
 }

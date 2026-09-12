@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const { getHomeModelState, getHomeHotspotState } = require('../public/home-state.js');
+const { createStateFactory, getHomeModelState, getHomeHotspotState } = require('../public/home-state.js');
 
 test('derives all four pending model hotspots for 小陈', () => {
   const state = {
@@ -66,4 +66,27 @@ test('derives semantic hotspot states from the homepage model state', () => {
     management: 'resolved',
     living: 'active',
   });
+});
+
+test('keeps zero-valued pending record ids active in hotspot state', () => {
+  assert.deepEqual(getHomeHotspotState({
+    debt: 0,
+    choreId: 0,
+    supplyId: 0,
+    ruleId: 0,
+    avatarPending: true,
+  }), {
+    room: 'active',
+    kitchen: 'active',
+    management: 'active',
+    living: 'active',
+  });
+});
+
+test('creates a fresh deep-cloned state for each factory call', () => {
+  const createInitialState = createStateFactory({ expenses: [{ paid: [] }] });
+  const mutated = createInitialState();
+  mutated.expenses[0].paid.push('小陈');
+
+  assert.deepEqual(createInitialState(), { expenses: [{ paid: [] }] });
 });
