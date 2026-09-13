@@ -324,3 +324,10 @@ test('warns about a member’s unpaid open expenses before move-out without bloc
   assert.match(appSource, /memberOpenExpenses/);
   assert.match(appSource, /确认办理退租/);
 });
+
+test('styles member management sections and keeps member actions touch-friendly', () => {
+  for (const selector of ['.member-list', '.member-admin-badge', '.member-history', '.member-event']) {
+    assert.match(styleSource, new RegExp(`\\${selector}\\s*\\{`, 'i'), `${selector} should have a dedicated style rule`);
+  }
+  assert.match(styleSource, /\.member-action\s*\{[^}]*min-height:\s*44px/i);
+});
