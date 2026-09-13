@@ -203,3 +203,10 @@ test('renders local semantic class hooks without changing home hotspot actions',
     assert.ok(appSource.includes(sourceContract), `app.js should retain ${sourceContract}`);
   }
 });
+
+test('slices supply cards before serializing the life preview', () => {
+  const renderLife = appSource.match(/function renderLife\(\) \{[\s\S]*?\n\}/)?.[0];
+
+  assert.ok(renderLife, 'app.js should retain renderLife');
+  assert.match(renderLife, /const supplyCards = state\.supplies\.map\([\s\S]*?\); const supplies = supplyCards\.slice\(0,2\)\.join\(''\);/);
+});
