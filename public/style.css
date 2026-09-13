@@ -137,6 +137,22 @@ h1 { font-size: 24px; }
 .settings { display: grid; gap: 1px; margin-top: 18px; overflow: hidden; }
 .settings button { display: flex; min-height: 52px; justify-content: space-between; padding: 14px 16px; border: 0; background: var(--color-surface); color: var(--color-text); text-align: left; }
 .settings i { color: var(--color-secondary); font-size: 22px; font-style: normal; line-height: 18px; }
+.rule-board, .notification-list { display: grid; gap: 12px; }
+.rule-post, .notification-item { border: 1px solid var(--color-divider); border-radius: var(--radius-card); background: var(--color-surface); box-shadow: var(--shadow-card); }
+.rule-post { padding: 16px; }
+.rule-post-head, .rule-post-actions, .notification-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.rule-post h3, .notification-item b { font-size: 15px; }
+.rule-post p, .notification-item small { margin-top: 4px; color: var(--color-secondary); font-size: 12px; }
+.rule-post-actions { margin-top: 14px; }
+.rule-post-actions .soft-btn { margin-left: auto; }
+.rule-post-status { padding: 4px 8px; border-radius: 8px; background: #fff1dd; color: var(--color-expense-text); font-size: 11px; white-space: nowrap; }
+.rule-post-status.adopted { background: #e4f7ea; color: var(--color-success-text); }
+.notification-item { width: 100%; min-height: 68px; padding: 14px 16px; text-align: left; }
+.notification-item span { display: grid; gap: 3px; }
+.notification-switch { width: 42px; height: 24px; flex: 0 0 42px; border-radius: 999px; background: #c7c7cc; }
+.notification-switch::after { content: ''; display: block; width: 18px; height: 18px; margin: 3px; border-radius: 50%; background: #fff; transition: transform .2s ease; }
+.notification-switch.on { background: var(--color-primary-action); }
+.notification-switch.on::after { transform: translateX(18px); }
 .reset { display: block; min-height: 44px; margin: 24px auto; border: 0; background: transparent; color: var(--color-danger-text); font-size: 12px; }
 
 .member-list, .member-history { margin-top: 18px; padding: 16px; border: 1px solid var(--color-divider); border-radius: var(--radius-card); background: var(--color-surface); box-shadow: var(--shadow-card); }

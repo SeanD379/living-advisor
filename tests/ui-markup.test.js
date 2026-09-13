@@ -362,3 +362,15 @@ test('moves public supplies into the life page public-supplies tab', () => {
   assert.doesNotMatch(renderLife, /supply-preview/);
   assert.match(appSource, /'show-life-tab'\(tab\)\s*\{\s*lifeTab = tab;\s*render\(\);\s*\}/);
 });
+
+test('renders a proposal board and supports creating and supporting house-rule posts', () => {
+  assert.match(appSource, /data-id="rules">公约/);
+  assert.match(appSource, /data-action="create-rule-post"/);
+  assert.match(appSource, /'support-rule-post'\(id\)/);
+});
+
+test('opens notification settings with persisted preference controls', () => {
+  assert.match(appSource, /data-action="show-notifications"/);
+  assert.match(appSource, /notifications/);
+  assert.match(appSource, /'toggle-notification'\(id\)/);
+});
