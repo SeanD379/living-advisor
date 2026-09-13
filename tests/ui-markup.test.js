@@ -263,6 +263,12 @@ test('renders active resident avatar controls with privacy-safe labels', () => {
   assert.match(styleSource, /\.resident-avatar-bottom-left\s*\{[^}]*top:\s*63%/i);
 });
 
+test('defines floor-plan coordinates for every selectable bedroom', () => {
+  for (const position of ['top-left', 'top-right', 'middle-left', 'middle-right', 'bottom-left', 'bottom-right']) {
+    assert.match(styleSource, new RegExp(`\\.resident-avatar-${position}\\s*\\{[^}]*top:`, 'i'));
+  }
+});
+
 test('uses a decorated house title and removes the redundant profile intro block', () => {
   const html = fs.readFileSync(path.join(__dirname, '../public/index.html'), 'utf8');
   const app = fs.readFileSync(path.join(__dirname, '../public/app.js'), 'utf8');

@@ -201,8 +201,11 @@ textarea { display: block; width: 100%; margin-top: 5px; padding: 10px 12px; bor
 .resident-avatar[data-status="pending"] { background: #fff1dd; color: var(--color-expense-text); }
 .resident-avatar[data-status="pending"]::after { position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px; content: ''; border: 2px solid #fff; border-radius: 50%; background: var(--color-expense); }
 .resident-avatar-top-left { top: 29%; left: 24%; }
+.resident-avatar-top-right { top: 29%; left: 75%; }
+.resident-avatar-middle-left { top: 46%; left: 24%; }
 .resident-avatar-middle-right { top: 46%; left: 75%; }
 .resident-avatar-bottom-left { top: 63%; left: 24%; }
+.resident-avatar-bottom-right { top: 63%; left: 75%; }
 .resident-facts { margin: 0; }
 .resident-facts div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--color-divider); }
 .resident-facts dt { color: var(--color-secondary); }
