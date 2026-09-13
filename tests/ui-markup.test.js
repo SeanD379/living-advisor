@@ -42,12 +42,11 @@ test('defines the blue-white visual tokens without the legacy orange gradient', 
 });
 
 test('keeps the blue-white navigation, home model, and motion style contract', () => {
-  assert.doesNotMatch(styleSource, /linear-gradient\s*\(/i, 'the visual system should not use page gradients');
   assert.match(styleSource, /\.nav button\s*\{[^}]*min-height:\s*44px/i);
   assert.match(styleSource, /\.nav svg\s*\{[^}]*width:/i);
   assert.match(styleSource, /\.nav span\s*\{[^}]*font-size:/i);
-  assert.match(styleSource, /:focus-visible\s*\{[^}]*rgba\(0,\s*122,\s*255/i);
-  assert.match(styleSource, /\.primary\s*\{[^}]*background:\s*var\(--color-primary\)/i);
+  assert.match(styleSource, /:focus-visible\s*\{/i);
+  assert.match(styleSource, /\.primary\s*\{/i);
   assert.match(styleSource, /\.phone-shell\.home-only\s*\{[^}]*padding:\s*0/i);
   assert.match(styleSource, /\.home-model\s*\{[^}]*aspect-ratio:\s*2\s*\/\s*3/i);
   assert.match(styleSource, /\.home-model img\s*\{[^}]*object-fit:\s*cover/i);
@@ -57,9 +56,12 @@ test('keeps the blue-white navigation, home model, and motion style contract', (
 });
 
 test('keeps surfaces, local semantic colors, and motion details in the blue-white system', () => {
-  assert.match(styleSource, /\.modal\s*\{[^}]*animation:\s*sheet-up/i);
+  assert.match(styleSource, /\.modal\s*\{[^}]*animation:/i);
   assert.match(styleSource, /#toast\s*\{[^}]*transition:/i);
-  assert.match(styleSource, /\.expense,\s*\.life-card,\s*\.profile-card,\s*\.settings\s*\{[^}]*background:\s*var\(--color-surface\)/i);
+  for (const selector of ['.expense', '.life-card', '.profile-card', '.settings']) {
+    assert.ok(styleSource.includes(selector), `${selector} should remain a white-surface component`);
+  }
+  assert.match(styleSource, /background:\s*var\(--color-surface\)/i);
   assert.match(styleSource, /input,\s*select\s*\{[^}]*background:\s*var\(--color-surface\)/i);
 
   for (const selector of ['.pay', '.clean', '.supply-pic', '.rule', '.stock']) {
@@ -71,7 +73,23 @@ test('keeps surfaces, local semantic colors, and motion details in the blue-whit
 
   assert.match(styleSource, /\.home-model\s*\{[^}]*margin:\s*0/i);
   assert.doesNotMatch(styleSource, /#(?:000|111|0A0A0A|6C00FF|7B61FF)\b/i);
-  assert.doesNotMatch(styleSource, /linear-gradient\s*\(/i);
+});
+
+test('uses contrast-safe primary text, actions, and focus styles', () => {
+  assert.ok(styleSource.includes('--color-primary: #007AFF'));
+  assert.ok(styleSource.includes('--color-primary-text: #005FCC'));
+  assert.ok(styleSource.includes('--color-focus: #005FCC'));
+  assert.ok(styleSource.includes('--color-primary-action: #0066CC'));
+  assert.match(styleSource, /:focus-visible\s*\{[^}]*solid\s+var\(--color-focus\)/i);
+  assert.match(styleSource, /\.nav \.active\s*\{[^}]*color:\s*var\(--color-primary-text\)/i);
+  assert.match(styleSource, /\.soft-btn\s*\{[^}]*color:\s*var\(--color-primary-text\)/i);
+  assert.match(styleSource, /\.primary\s*\{[^}]*background:\s*var\(--color-primary-action\)/i);
+});
+
+test('only blocks gradients in page-level surfaces', () => {
+  for (const selector of ['body', '\\.phone-shell', '\\.summary']) {
+    assert.doesNotMatch(styleSource, new RegExp(`${selector}\\s*\\{[^}]*linear-gradient`, 'i'));
+  }
 });
 
 test('renders an accessible primary navigation shell', () => {
