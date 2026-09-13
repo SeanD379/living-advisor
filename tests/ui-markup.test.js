@@ -374,3 +374,16 @@ test('opens notification settings with persisted preference controls', () => {
   assert.match(appSource, /notifications/);
   assert.match(appSource, /'toggle-notification'\(id\)/);
 });
+
+test('uses a compact icon back button for profile subpages', () => {
+  assert.match(appSource, /class="back-link" data-action="back-to-profile" aria-label="返回我的"><span aria-hidden="true">‹<\/span>/);
+  assert.match(styleSource, /\.back-link\s*\{[\s\S]*?width:\s*44px/);
+});
+
+test('lets residents add supplies and routes supply and rule deletion through admin approval', () => {
+  assert.match(appSource, /data-action="add-supply"/);
+  assert.match(appSource, /'request-delete-supply'\(id\)/);
+  assert.match(appSource, /'request-delete-rule-post'\(id\)/);
+  assert.match(appSource, /'approve-deletion'\(id\)/);
+  assert.match(appSource, /'reject-deletion'\(id\)/);
+});
