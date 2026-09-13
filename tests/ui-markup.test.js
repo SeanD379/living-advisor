@@ -229,11 +229,13 @@ test('renders local semantic class hooks without changing home hotspot actions',
   }
 });
 
-test('slices supply cards before serializing the life preview', () => {
+test('renders the full supply list only in the public-supplies tab', () => {
   const renderLife = appSource.match(/function renderLife\(\) \{[\s\S]*?\n\}/)?.[0];
 
   assert.ok(renderLife, 'app.js should retain renderLife');
-  assert.match(renderLife, /const supplyCards = state\.supplies\.map\([\s\S]*?\); const supplies = supplyCards\.slice\(0,2\)\.join\(''\);/);
+  assert.match(renderLife, /const supplies = state\.supplies\.map\([\s\S]*?\)\.join\(''\);/);
+  assert.match(renderLife, /lifeTab === 'supplies'/);
+  assert.doesNotMatch(renderLife, /supply-preview/);
 });
 
 test('renders active resident avatar controls with privacy-safe labels', () => {
@@ -350,4 +352,13 @@ test('provides an accessible return action from member management to my page', (
   assert.match(appSource, /data-action="back-to-profile"[^>]*aria-label="返回我的"/);
   assert.match(appSource, /'back-to-profile'\(\)\s*\{\s*go\('profile'\);\s*\}/);
   assert.match(styleSource, /\.back-link\s*\{[^}]*min-height:\s*44px/i);
+});
+
+test('moves public supplies into the life page public-supplies tab', () => {
+  const renderLife = appSource.match(/function renderLife\(\) \{[\s\S]*?\n\}/)?.[0];
+
+  assert.match(renderLife, /data-action="show-life-tab" data-id="supplies">公共物品/);
+  assert.match(renderLife, /lifeTab === 'supplies'/);
+  assert.doesNotMatch(renderLife, /supply-preview/);
+  assert.match(appSource, /'show-life-tab'\(tab\)\s*\{\s*lifeTab = tab;\s*render\(\);\s*\}/);
 });

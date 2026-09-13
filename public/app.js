@@ -20,6 +20,7 @@ function normalizeState(savedState) {
 }
 let state = normalizeState(JSON.parse(localStorage.getItem('shared-home-state') || 'null'));
 let page = 'home';
+let lifeTab = 'chores';
 const app = document.querySelector('#app');
 const save = () => localStorage.setItem('shared-home-state', JSON.stringify(state));
 const me = '小陈';
@@ -80,7 +81,16 @@ function renderExpenses() {
   const list = state.expenses.map(x => { const mine = x.shares[me] || 0; const settled = x.paid.length + 1; const participantCount = Object.keys(x.shares).length; return `<article class="expense"><div class="expense-title"><span class="expense-icon">⚡</span><div><h3>${x.name}</h3><p>${x.date} · ${x.payer}垫付</p></div><strong>${money(x.amount)}</strong></div><div class="expense-bottom"><span>${settled}/${participantCount} 已结清</span><span class="expense-status">${x.status === 'checking' ? '待核对' : x.paid.includes(me) ? '我已转账' : `我应付 ${money(mine)}`}</span></div><button class="link-btn" data-action="detail" data-id="${x.id}">查看分摊明细 →</button></article>`; }).join('');
   return `<section class="page-title"><div><p class="eyebrow">本月共同账本</p><h2>费用 AA</h2></div><button class="round-add" data-action="add-expense">＋</button></section><section class="summary expense-summary"><span>本月我应付<strong>${money(openExpenses().filter(x => !x.paid.includes(me)).reduce((a,x) => a+x.shares[me],0))}</strong></span><span>我已垫付<strong>${money(state.expenses.filter(x=>x.payer===me).reduce((a,x)=>a+x.amount,0))}</strong></span></section><div class="filter"><b>本月账单</b><button>全部⌄</button></div><div class="expense-list">${list}</div>`;
 }
-function renderLife() { const date = lifeDateLabel(); const chores = state.chores.map(x => `<article class="life-card"><span class="date-badge">今<br><b>${date.day}</b></span><div><p>20:00 前完成</p><h3>${x.name}</h3><span>轮到 <b>${x.owner}</b></span></div>${x.done ? '<span class="done life-status">已完成</span>' : x.owner === me ? `<button class="soft-btn" data-action="chore" data-id="${x.id}">完成</button>` : ''}</article>`).join(''); const supplyCards = state.supplies.map(x => `<article class="supply"><span class="supply-pic">${x.name === '纸巾' ? '▤' : '◒'}</span><div><h3>${x.name}</h3><p>${x.place} · 剩余 ${x.quantity} ${x.unit}</p></div><span class="stock ${x.quantity<=x.threshold?'low':''}">${x.quantity<=x.threshold?'待补货':'充足'}</span></article>`); const supplies = supplyCards.slice(0,2).join(''); return `<section class="page-title"><div><p class="eyebrow">一起照顾共同空间</p><h2>生活</h2></div></section><div class="tabs"><button class="tab active">值日</button><button class="tab" data-action="show-supplies">物品</button><button class="tab" data-action="show-rules">公约</button></div><section class="week"><div><p>${date.month} 月 · 第 ${date.week} 周</p><h3>本周值日</h3></div><button>智能均衡排班</button></section><div>${chores}</div><button class="outline" data-action="swap">⇄ 申请换班</button><section class="supply-preview"><div class="section-head"><h2>公共物品</h2><button data-action="show-supplies">查看全部</button></div>${supplies}</section>`; }
+function renderLife() {
+  const date = lifeDateLabel();
+  const chores = state.chores.map(x => `<article class="life-card"><span class="date-badge">今<br><b>${date.day}</b></span><div><p>20:00 前完成</p><h3>${x.name}</h3><span>轮到 <b>${x.owner}</b></span></div>${x.done ? '<span class="done life-status">已完成</span>' : x.owner === me ? `<button class="soft-btn" data-action="chore" data-id="${x.id}">完成</button>` : ''}</article>`).join('');
+  const supplies = state.supplies.map(x => `<article class="supply"><span class="supply-pic">${x.name === '纸巾' ? '▤' : '◒'}</span><div><h3>${x.name}</h3><p>${x.place} · 剩余 ${x.quantity} ${x.unit}</p></div><span class="stock ${x.quantity<=x.threshold?'low':''}">${x.quantity<=x.threshold?'待补货':'充足'}</span></article>`).join('');
+  const tabs = `<div class="tabs"><button class="tab ${lifeTab === 'chores' ? 'active' : ''}" data-action="show-life-tab" data-id="chores">值日</button><button class="tab ${lifeTab === 'supplies' ? 'active' : ''}" data-action="show-life-tab" data-id="supplies">公共物品</button><button class="tab" data-action="show-rules">公约</button></div>`;
+  const content = lifeTab === 'supplies'
+    ? `<section class="supply-list"><div class="section-head"><h2>公共物品</h2></div>${supplies}</section>`
+    : `<section class="week"><div><p>${date.month} 月 · 第 ${date.week} 周</p><h3>本周值日</h3></div><button>智能均衡排班</button></section><div>${chores}</div><button class="outline" data-action="swap">⇄ 申请换班</button>`;
+  return `<section class="page-title"><div><p class="eyebrow">一起照顾共同空间</p><h2>生活</h2></div></section>${tabs}${content}`;
+}
 function renderMembers() {
   const members = activeResidents(state);
   const canManage = state.household.adminId === me;
@@ -98,6 +108,7 @@ function updateHeaderBackLink() {
 }
 function render() { document.querySelector('.phone-shell').classList.toggle('home-only', page === 'home'); app.innerHTML = page === 'home' ? renderHome() : page === 'expenses' ? renderExpenses() : page === 'life' ? renderLife() : page === 'members' ? renderMembers() : renderProfile(); document.querySelector('.topbar-title h1').textContent = houseName(); updateHeaderBackLink(); const statusLink = document.querySelector('.home-status-link'); if (statusLink) { const model = getHomeModelState(state, me); const pendingCount = [model.debt > 0, model.choreId !== null, model.supplyId !== null, model.ruleId !== null].filter(Boolean).length; statusLink.textContent = pendingCount ? `我的状态 · ${pendingCount}` : '我的状态 · 已完成'; statusLink.setAttribute('aria-label', pendingCount ? `查看我的${pendingCount}项待处理事项` : '查看我的待处理事项，当前已完成'); } document.querySelectorAll('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page)); actionButtons(); }
 const actions = {
+  'show-life-tab'(tab) { lifeTab = tab; render(); },
   'back-to-profile'() { go('profile'); },
   'show-members'() { page = 'members'; render(); },
   'transfer-admin'() {
