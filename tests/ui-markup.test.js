@@ -242,8 +242,12 @@ test('renders three centered resident avatar controls with privacy-safe labels',
   assert.ok(renderHome, 'app.js should retain renderHome');
   assert.match(appSource, /const residents = \[[\s\S]*?\];/);
   assert.equal((appSource.match(/position: 'resident-avatar-/g) || []).length, 3, 'occupied rooms should have exactly three resident avatar positions');
-  assert.match(renderHome, /residents\.map\(resident => `.*resident-avatar/);
+  assert.match(renderHome, /residents\.map\(resident =>[\s\S]*resident-avatar/);
   assert.equal((renderHome.match(/data-action="show-resident"/g) || []).length, 1);
+  assert.match(renderHome, /const pendingCount = \[[\s\S]*?\]\.filter\(Boolean\)\.length/);
+  assert.match(renderHome, /data-status="\$\{residentPending \? 'pending' : 'settled'\}"/);
+  assert.match(html, /class="home-status-link"[^>]*data-action="show-member-status"/);
+  assert.match(html, /class="home-status-link"[^>]*aria-label="查看我的待处理事项"/);
   for (const resident of ['小王', '小李', '小陈']) {
     assert.match(appSource, new RegExp(`id: '${resident}', name: '${resident}'`));
   }
@@ -254,6 +258,8 @@ test('renders three centered resident avatar controls with privacy-safe labels',
   assert.match(styleSource, /\.resident-avatar\s*\{[^}]*min-width:\s*44px/i);
   assert.match(styleSource, /\.resident-avatar:focus-visible\s*\{/i);
   assert.match(styleSource, /\.resident-avatar:active\s*\{/i);
+  assert.match(styleSource, /\.resident-avatar span\s*\{[^}]*position:\s*static/i);
+  assert.match(styleSource, /\.home-status-link:active\s*\{/i);
   assert.match(styleSource, /\.resident-avatar-top-left\s*\{[^}]*top:\s*29%/i);
   assert.match(styleSource, /\.resident-avatar-middle-right\s*\{[^}]*top:\s*46%/i);
   assert.match(styleSource, /\.resident-avatar-bottom-left\s*\{[^}]*top:\s*63%/i);
@@ -274,4 +280,33 @@ test('keeps the house title and roommate rules editable', () => {
   assert.match(appSource, /'edit-house'\(\)[\s\S]*?id="house-form"/);
   assert.match(appSource, /'show-rules'\(\)[\s\S]*?id="rule-form"[\s\S]*?<textarea/);
   assert.match(appSource, /x\.version\s*=\s*form\.get\('version'\)/);
+});
+
+test('supports accessible modal dismissal and mobile-friendly form inputs', () => {
+  assert.match(appSource, /event\.target\s*===\s*event\.currentTarget/);
+  assert.match(appSource, /focusable/);
+  for (const id of ['house-name', 'rule-version', 'rule-title', 'rule-text', 'rule-progress', 'expense-name', 'expense-amount', 'purchase-quantity']) {
+    assert.match(appSource, new RegExp(`for="${id}"`));
+    assert.match(appSource, new RegExp(`id="${id}"`));
+  }
+  assert.match(appSource, /inputmode="decimal"/);
+  assert.match(appSource, /inputmode="numeric"/);
+  assert.match(styleSource, /button\s*\{[^}]*touch-action:\s*manipulation/i);
+  assert.match(styleSource, /button:active\s*\{/i);
+});
+
+test('guards repeat confirmations and empty payment actions', () => {
+  assert.match(appSource, /if\s*\(!x\.confirmed\.includes\(me\)\)/);
+  assert.match(appSource, /const x = openExpenses\(\)\.find[\s\S]*?if\s*\(!x\)/);
+  assert.match(appSource, /当前没有待付款账单/);
+});
+
+test('keeps house labels and life dates dynamic on small screens', () => {
+  assert.match(appSource, /function houseName\(\)/);
+  assert.match(appSource, /const name = houseName\(\)/);
+  assert.match(appSource, /function lifeDateLabel\(\)/);
+  assert.match(appSource, /lifeDateLabel\(\)/);
+  assert.doesNotMatch(appSource, /9 月 · 第 2 周/);
+  assert.match(styleSource, /@media\s*\(max-width:\s*375px\)/i);
+  assert.match(styleSource, /\.house-title-frame\s*\{[^}]*max-width:/i);
 });

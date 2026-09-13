@@ -36,7 +36,9 @@ body {
 
 button, input, select { font: inherit; }
 button { cursor: pointer; }
-button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+button { touch-action: manipulation; }
+button:active { opacity: 0.78; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { letter-spacing: -0.02em; }
 
@@ -45,6 +47,7 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .topbar, .page-title, .section-head { justify-content: space-between; }
 .topbar.compact { position: relative; justify-content: center; padding: 4px 0; }
 .home-status-link { position: absolute; right: 12px; min-height: 36px; padding: 0 10px; border: 1px solid var(--color-divider); border-radius: 999px; background: var(--color-surface); color: var(--color-primary-text); font-size: 12px; font-weight: 600; }
+.home-status-link:active { opacity: 0.72; transform: scale(0.97); }
 .topbar-title { display: flex; align-items: center; gap: 4px; }
 .house-title-frame { position: relative; padding: 8px 24px; border: 1px solid var(--color-divider); border-radius: 18px; background: var(--color-surface); box-shadow: 0 4px 14px rgba(29, 29, 31, 0.08); cursor: pointer; }
 .house-title-frame::before, .house-title-frame::after { position: absolute; top: 50%; width: 10px; height: 10px; content: ''; border-top: 1.5px solid var(--color-primary); border-bottom: 1.5px solid var(--color-primary); transform: translateY(-50%); }
@@ -156,6 +159,13 @@ textarea { display: block; width: 100%; margin-top: 5px; padding: 10px 12px; bor
 .show { opacity: 1 !important; transform: translate(-50%, 0) !important; }
 @keyframes sheet-up { from { transform: translateY(30px); } to { transform: translateY(0); } }
 
+@media (max-width: 375px) {
+  .topbar.compact { padding-right: 8px; padding-left: 8px; }
+  .house-title-frame { max-width: calc(100% - 96px); }
+  .house-title-frame h1 { overflow: hidden; max-width: 100%; font-size: 20px; text-overflow: ellipsis; white-space: nowrap; }
+  .home-status-link { right: 8px; max-width: 88px; overflow: hidden; padding: 0 8px; text-overflow: ellipsis; white-space: nowrap; }
+}
+
 .phone-shell.home-only { display: flex; min-height: 100dvh; flex-direction: column; padding: 0 0 80px; }
 .phone-shell.home-only #app { display: flex; min-height: 0; flex: 1; flex-direction: column; }
 .home-model { display: flex; min-height: 0; flex: 1; flex-direction: column; align-items: center; justify-content: flex-end; margin: 0; overflow: hidden; background: var(--color-page); }
@@ -172,10 +182,12 @@ textarea { display: block; width: 100%; margin-top: 5px; padding: 10px 12px; bor
 .management-hotspot { top: 31%; left: 45%; }
 .living-hotspot { bottom: 7%; left: 42%; }
 .model-hotspot span { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.resident-avatar { position: absolute; z-index: 1; display: grid; min-width: 44px; width: 48px; min-height: 44px; height: 48px; place-items: center; padding: 0; border: 2px solid #fff; border-radius: 50%; background: rgba(0, 122, 255, 0.12); color: transparent; box-shadow: 0 2px 8px rgba(29, 29, 31, 0.2); transform: translate(-50%, -50%); }
+.resident-avatar { position: absolute; z-index: 1; display: grid; min-width: 44px; width: 48px; min-height: 44px; height: 48px; place-items: center; padding: 0; border: 2px solid #fff; border-radius: 50%; background: rgba(0, 122, 255, 0.12); color: var(--color-primary-text); box-shadow: 0 2px 8px rgba(29, 29, 31, 0.2); transform: translate(-50%, -50%); }
 .resident-avatar:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
 .resident-avatar:active { transform: translate(-50%, -50%) scale(0.94); }
-.resident-avatar span { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.resident-avatar span { position: static; width: auto; height: auto; padding: 0; margin: 0; overflow: visible; clip: auto; white-space: normal; border: 0; font-size: 16px; font-weight: 700; }
+.resident-avatar[data-status="pending"] { background: #fff1dd; color: var(--color-expense-text); }
+.resident-avatar[data-status="pending"]::after { position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px; content: ''; border: 2px solid #fff; border-radius: 50%; background: var(--color-expense); }
 .resident-avatar-top-left { top: 29%; left: 24%; }
 .resident-avatar-middle-right { top: 46%; left: 75%; }
 .resident-avatar-bottom-left { top: 63%; left: 24%; }
