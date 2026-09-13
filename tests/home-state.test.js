@@ -1,7 +1,14 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 
-const { createStateFactory, getHomeModelState, getHomeHotspotState } = require('../public/home-state.js');
+const {
+  activeResidents,
+  createStateFactory,
+  getHomeModelState,
+  getHomeHotspotState,
+  inviteResident,
+  moveOutResident,
+} = require('../public/home-state.js');
 
 test('derives all four pending model hotspots for 小陈', () => {
   const state = {
@@ -89,4 +96,28 @@ test('creates a fresh deep-cloned state for each factory call', () => {
   mutated.expenses[0].paid.push('小陈');
 
   assert.deepEqual(createInitialState(), { expenses: [{ paid: [] }] });
+});
+
+test('invites a resident into an empty room and retains active residents only', () => {
+  const state = { household: { adminId: '小陈', members: [
+    { id: '小陈', name: '小陈', room: '左下卧室', position: 'resident-avatar-bottom-left', status: 'active', joinedAt: '2026-09-01' },
+  ], history: [] } };
+
+  inviteResident(state, { name: '小周', room: '右上卧室', position: 'resident-avatar-top-right', joinedAt: '2026-09-14' });
+
+  assert.deepEqual(activeResidents(state).map((member) => member.name), ['小陈', '小周']);
+  assert.equal(state.household.history[0].type, '入住');
+});
+
+test('requires an administrator successor before the administrator can move out', () => {
+  const state = { household: { adminId: '小陈', members: [
+    { id: '小陈', name: '小陈', status: 'active' },
+    { id: '小王', name: '小王', status: 'active' },
+  ], history: [] } };
+
+  assert.throws(() => moveOutResident(state, '小陈', '2026-09-20'), /接任管理员/);
+  moveOutResident(state, '小陈', '2026-09-20', '小王');
+  assert.equal(state.household.adminId, '小王');
+  assert.deepEqual(activeResidents(state).map((member) => member.name), ['小王']);
+  assert.deepEqual(state.household.history.map((event) => event.type), ['退租', '管理员转让']);
 });
