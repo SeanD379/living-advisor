@@ -102,6 +102,14 @@ test('uses opaque settlement copy and dark semantic text for status labels', () 
   assert.match(styleSource, /\.section-head em\s*\{[^}]*background:\s*var\(--color-danger-action\)/i);
 });
 
+test('uses AA-safe foregrounds on pale controls and status surfaces', () => {
+  assert.ok(styleSource.includes('--color-supply-text: #765600'));
+  assert.match(styleSource, /\.avatar,\s*\.round-add\s*\{[^}]*color:\s*var\(--color-primary-text\)/i);
+  assert.match(styleSource, /\.faces \.me\s*\{[^}]*color:\s*var\(--color-success-text\)/i);
+  assert.match(styleSource, /\.stock\s*\{[^}]*color:\s*var\(--color-success-text\)/i);
+  assert.match(styleSource, /\.supply-pic\s*\{[^}]*color:\s*var\(--color-supply-text\)/i);
+});
+
 test('only blocks gradients in page-level surfaces', () => {
   for (const selector of ['body', '\\.phone-shell', '\\.summary']) {
     assert.doesNotMatch(styleSource, new RegExp(`${selector}\\s*\\{[^}]*linear-gradient`, 'i'));
