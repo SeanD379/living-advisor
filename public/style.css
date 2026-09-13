@@ -170,9 +170,9 @@ input, select { display: block; width: 100%; min-height: 44px; margin-top: 5px; 
 .resident-avatar:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
 .resident-avatar:active { transform: translate(-50%, -50%) scale(0.94); }
 .resident-avatar span { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.resident-avatar-top-left { top: 33%; left: 24%; }
-.resident-avatar-middle-right { top: 50%; left: 75%; }
-.resident-avatar-bottom-left { top: 68%; left: 24%; }
+.resident-avatar-top-left { top: 29%; left: 24%; }
+.resident-avatar-middle-right { top: 46%; left: 75%; }
+.resident-avatar-bottom-left { top: 63%; left: 24%; }
 .resident-facts { margin: 0; }
 .resident-facts div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--color-divider); }
 .resident-facts dt { color: var(--color-secondary); }

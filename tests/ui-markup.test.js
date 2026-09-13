@@ -241,4 +241,7 @@ test('renders three centered resident avatar controls with privacy-safe labels',
   assert.match(styleSource, /\.resident-avatar\s*\{[^}]*min-width:\s*44px/i);
   assert.match(styleSource, /\.resident-avatar:focus-visible\s*\{/i);
   assert.match(styleSource, /\.resident-avatar:active\s*\{/i);
+  assert.match(styleSource, /\.resident-avatar-top-left\s*\{[^}]*top:\s*29%/i);
+  assert.match(styleSource, /\.resident-avatar-middle-right\s*\{[^}]*top:\s*46%/i);
+  assert.match(styleSource, /\.resident-avatar-bottom-left\s*\{[^}]*top:\s*63%/i);
 });
