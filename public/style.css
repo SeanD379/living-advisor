@@ -43,10 +43,11 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .phone-shell { min-height: 100vh; max-width: 480px; margin: auto; padding: 24px 16px 104px; background: var(--color-page); }
 .topbar, .page-title, .section-head, .expense-bottom, .life-card, .supply, .profile-card { display: flex; align-items: center; }
 .topbar, .page-title, .section-head { justify-content: space-between; }
-.topbar.compact { justify-content: flex-start; padding: 4px 0; }
+.topbar.compact { justify-content: center; padding: 4px 0; }
+.topbar-title { display: flex; align-items: center; gap: 4px; }
 .eyebrow { margin-bottom: 4px; color: var(--color-secondary); font-size: 12px; }
 h1 { font-size: 24px; }
-h1 span { color: var(--color-secondary); font-size: 17px; font-weight: 500; }
+.topbar-title span { color: var(--color-secondary); font-size: 17px; font-weight: 500; }
 .page-title { margin: 4px 0 20px; }
 .page-title h2, .section-head h2 { font-size: 22px; }
 

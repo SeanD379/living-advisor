@@ -28,6 +28,18 @@ test('uses the Apple blue browser theme color', () => {
   ));
 });
 
+test('centers the home title and dropdown arrow as one accessible group', () => {
+  const topbar = elements(html, 'header').find((element) =>
+    attribute(element.attributes, 'class') === 'topbar compact',
+  );
+
+  assert.ok(topbar, 'compact topbar should remain the shared home title shell');
+  assert.match(topbar.content, /<div class="topbar-title"><h1>橘子洲 3A<\/h1><span aria-hidden="true">⌄<\/span><\/div>/);
+  assert.match(styleSource, /\.topbar\.compact\s*\{[^}]*justify-content:\s*center/i);
+  assert.match(styleSource, /\.topbar-title\s*\{[^}]*display:\s*flex/i);
+  assert.match(styleSource, /\.topbar-title\s*\{[^}]*align-items:\s*center/i);
+});
+
 test('defines the blue-white visual tokens without the legacy orange gradient', () => {
   for (const token of [
     '--color-page: #F5F7FA',
