@@ -41,6 +41,21 @@ test('defines the blue-white visual tokens without the legacy orange gradient', 
   assert.doesNotMatch(styleSource, /linear-gradient\(115deg\s*,\s*#f87e4a\s*,\s*#f8a363\s*\)/i);
 });
 
+test('keeps the blue-white navigation, home model, and motion style contract', () => {
+  assert.doesNotMatch(styleSource, /linear-gradient\s*\(/i, 'the visual system should not use page gradients');
+  assert.match(styleSource, /\.nav button\s*\{[^}]*min-height:\s*44px/i);
+  assert.match(styleSource, /\.nav svg\s*\{[^}]*width:/i);
+  assert.match(styleSource, /\.nav span\s*\{[^}]*font-size:/i);
+  assert.match(styleSource, /:focus-visible\s*\{[^}]*rgba\(0,\s*122,\s*255/i);
+  assert.match(styleSource, /\.primary\s*\{[^}]*background:\s*var\(--color-primary\)/i);
+  assert.match(styleSource, /\.phone-shell\.home-only\s*\{[^}]*padding:\s*0/i);
+  assert.match(styleSource, /\.home-model\s*\{[^}]*aspect-ratio:\s*2\s*\/\s*3/i);
+  assert.match(styleSource, /\.home-model img\s*\{[^}]*object-fit:\s*cover/i);
+  assert.match(styleSource, /\.modal\s*\{/i);
+  assert.match(styleSource, /#toast\s*\{/i);
+  assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
+});
+
 test('renders an accessible primary navigation shell', () => {
   const nav = elements(html, 'nav').find((element) =>
     attribute(element.attributes, 'class') === 'nav' && attribute(element.attributes, 'aria-label') === '主导航',
