@@ -164,3 +164,21 @@ test('keeps the app mount points and local scripts intact', () => {
 test('synchronizes the current-page announcement when navigation changes', () => {
   assert.match(appSource, /function go\(next\)[\s\S]*?b\.setAttribute\(['"]aria-current['"],\s*['"]page['"]\)[\s\S]*?b\.removeAttribute\(['"]aria-current['"]\)/);
 });
+
+test('renders local semantic class hooks without changing home hotspot actions', () => {
+  for (const className of ['expense-summary', 'expense-status', 'life-status', 'profile-avatar']) {
+    assert.match(appSource, new RegExp(`class=["'][^"']*\\b${className}\\b`));
+  }
+
+  for (const [className, action] of [
+    ['hotspot-room', 'show-member-status'],
+    ['hotspot-kitchen', 'show-supplies'],
+    ['hotspot-management', 'open-pending'],
+  ]) {
+    assert.match(appSource, new RegExp(`class=["'][^"']*\\b${className}\\b[^"']*["'][^>]*data-action=["']${action}["']`));
+  }
+  assert.match(appSource, /class=["'][^"']*\bhotspot-living\b[^"']*["'][^>]*data-page=["']life["']/);
+  for (const sourceContract of ['function go(next)', 'function actionButtons()', 'const actions = {', 'function purchase(x)']) {
+    assert.ok(appSource.includes(sourceContract), `app.js should retain ${sourceContract}`);
+  }
+});
