@@ -90,7 +90,7 @@ test('uses opaque settlement copy and dark semantic text for status labels', () 
   assert.doesNotMatch(styleSource, /\.settlement p,\s*\.settlement small\s*\{[^}]*opacity:/i);
   for (const token of [
     '--color-expense-text: #9A5A00',
-    '--color-success-text: #16803A',
+    '--color-success-text: #147534',
     '--color-danger-text: #B42318',
   ]) {
     assert.ok(styleSource.includes(token), `style.css should define ${token}`);
