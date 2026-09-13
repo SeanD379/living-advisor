@@ -34,7 +34,7 @@ test('centers the home title and dropdown arrow as one accessible group', () => 
   );
 
   assert.ok(topbar, 'compact topbar should remain the shared home title shell');
-  assert.match(topbar.content, /<div class="topbar-title"><h1>橘子洲 3A<\/h1><span aria-hidden="true">⌄<\/span><\/div>/);
+  assert.match(topbar.content, /<div class="topbar-title(?: house-title-frame)?"><h1>橘子洲 3A<\/h1><span aria-hidden="true">⌄<\/span><\/div>/);
   assert.match(styleSource, /\.topbar\.compact\s*\{[^}]*justify-content:\s*center/i);
   assert.match(styleSource, /\.topbar-title\s*\{[^}]*display:\s*flex/i);
   assert.match(styleSource, /\.topbar-title\s*\{[^}]*align-items:\s*center/i);
@@ -256,4 +256,14 @@ test('renders three centered resident avatar controls with privacy-safe labels',
   assert.match(styleSource, /\.resident-avatar-top-left\s*\{[^}]*top:\s*29%/i);
   assert.match(styleSource, /\.resident-avatar-middle-right\s*\{[^}]*top:\s*46%/i);
   assert.match(styleSource, /\.resident-avatar-bottom-left\s*\{[^}]*top:\s*63%/i);
+});
+
+test('uses a decorated house title and removes the redundant profile intro block', () => {
+  const html = fs.readFileSync(path.join(__dirname, '../public/index.html'), 'utf8');
+  const app = fs.readFileSync(path.join(__dirname, '../public/app.js'), 'utf8');
+  const css = fs.readFileSync(path.join(__dirname, '../public/style.css'), 'utf8');
+  assert.match(html, /class="topbar-title house-title-frame"/);
+  assert.match(css, /\.house-title-frame\s*\{/);
+  assert.match(css, /\.house-title-frame::before/);
+  assert.doesNotMatch(app, /<p class="eyebrow">我的合租生活<\/p>/);
 });
