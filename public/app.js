@@ -12,19 +12,25 @@ const save = () => localStorage.setItem('shared-home-state', JSON.stringify(stat
 const me = '小陈';
 const money = n => `¥${Number(n).toFixed(2)}`;
 const openExpenses = () => state.expenses.filter(x => x.status === 'open');
+const residents = [
+  { id: '小王', name: '小王', room: '左上卧室', position: 'resident-avatar-top-left' },
+  { id: '小李', name: '小李', room: '右中卧室', position: 'resident-avatar-middle-right' },
+  { id: '小陈', name: '小陈', room: '左下卧室', position: 'resident-avatar-bottom-left' },
+];
 let modalId = 0;
 let modalTrigger = null;
 let removeEscapeListener = null;
 function toast(text) { const el = document.querySelector('#toast'); el.textContent = text; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2100); }
 function go(next) { page = next; document.querySelectorAll('.nav button').forEach(b => { const active = b.dataset.page === next; b.classList.toggle('active', active); if (active) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }); render(); }
-function actionButtons() { document.querySelectorAll('[data-action]').forEach(b => b.onclick = () => actions[b.dataset.action](b.dataset.id)); }
+function actionButtons() { document.querySelectorAll('[data-action]').forEach(b => b.onclick = () => actions[b.dataset.action](b.dataset.id || b.dataset.residentId)); }
 function modal(title, body) { modalTrigger = document.activeElement; if (removeEscapeListener) removeEscapeListener(); const headingId = `modal-title-${++modalId}`; document.querySelector('#modal-root').innerHTML = `<div class="overlay"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="${headingId}"><button class="close" aria-label="关闭">×</button><h2 id="${headingId}">${title}</h2>${body}</section></div>`; const closeButton = document.querySelector('.close'); closeButton.onclick = closeModal; const onEscape = event => { if (event.key === 'Escape') closeModal(); }; document.addEventListener('keydown', onEscape); removeEscapeListener = () => document.removeEventListener('keydown', onEscape); closeButton.focus(); }
 function closeModal() { if (removeEscapeListener) removeEscapeListener(); removeEscapeListener = null; document.querySelector('#modal-root').innerHTML = ''; if (modalTrigger?.isConnected) modalTrigger.focus(); modalTrigger = null; }
 function card(icon, title, text, label, action, id) { return `<article class="action-card"><span class="card-icon ${icon}">${icon === 'pay' ? '¥' : icon === 'clean' ? '✦' : icon === 'supply' ? '▣' : '⌁'}</span><div><h3>${title}</h3><p>${text}</p></div>${action ? `<button class="soft-btn" data-action="${action}" data-id="${id || ''}">${label}</button>` : ''}</article>`; }
 function renderHome() {
   const model = getHomeModelState(state, me);
   const hotspots = getHomeHotspotState(model);
-  return `<section class="home-model" aria-label="橘子洲 3A 合租屋状态模型"><div class="home-model-canvas"><img src="/assets/shared-home-floor-plan.png" alt="橘子洲 3A 的六间卧室、餐厨区、管理角和活动区俯视模型"><button class="model-hotspot room-hotspot hotspot-room ${hotspots.room}" data-action="show-member-status" aria-label="查看小陈的房间状态"><span>小陈的房间状态</span></button><button class="model-hotspot kitchen-hotspot hotspot-kitchen ${hotspots.kitchen}" data-action="show-supplies" aria-label="查看餐厨区物品状态"><span>餐厨区物品状态</span></button><button class="model-hotspot management-hotspot hotspot-management ${hotspots.management}" data-action="open-pending" aria-label="查看管理角待处理事项"><span>管理角待处理事项</span></button><button class="model-hotspot living-hotspot hotspot-living ${hotspots.living}" data-page="life" aria-label="查看活动区生活事项"><span>活动区生活事项</span></button></div></section>
+  const residentButtons = residents.map(resident => `<button class="resident-avatar ${resident.position}" data-action="show-resident" data-resident-id="${resident.id}" data-resident-name="${resident.name}" aria-label="查看${resident.name}的合租信息"><span>${resident.name}</span></button>`).join('');
+  return `<section class="home-model" aria-label="橘子洲 3A 合租屋状态模型"><div class="home-model-canvas"><img src="/assets/shared-home-floor-plan.png" alt="橘子洲 3A 的六间卧室、餐厨区、管理角和活动区俯视模型">${residentButtons}<button class="model-hotspot room-hotspot hotspot-room ${hotspots.room}" data-action="show-member-status" aria-label="查看小陈的房间状态"><span>小陈的房间状态</span></button><button class="model-hotspot kitchen-hotspot hotspot-kitchen ${hotspots.kitchen}" data-action="show-supplies" aria-label="查看餐厨区物品状态"><span>餐厨区物品状态</span></button><button class="model-hotspot management-hotspot hotspot-management ${hotspots.management}" data-action="open-pending" aria-label="查看管理角待处理事项"><span>管理角待处理事项</span></button><button class="model-hotspot living-hotspot hotspot-living ${hotspots.living}" data-page="life" aria-label="查看活动区生活事项"><span>活动区生活事项</span></button></div></section>
     `;
 }
 function renderExpenses() {
@@ -35,6 +41,15 @@ function renderLife() { const chores = state.chores.map(x => `<article class="li
 function renderProfile() { return `<section class="page-title"><div><p class="eyebrow">我的合租生活</p><h2>小陈</h2></div></section><section class="profile-card"><span class="profile-avatar">陈</span><div><h3>橘子洲 3A</h3><p>成员 · 结算日每月 28 日</p></div></section><div class="settings"><button>成员与邀请 <i>›</i></button><button>默认费用规则 <i>›</i></button><button>通知设置 <i>›</i></button></div><button class="reset" data-action="reset">重置演示数据</button>`; }
 function render() { document.querySelector('.phone-shell').classList.toggle('home-only', page === 'home'); app.innerHTML = page === 'home' ? renderHome() : page === 'expenses' ? renderExpenses() : page === 'life' ? renderLife() : renderProfile(); document.querySelectorAll('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page)); actionButtons(); }
 const actions = {
+  'show-resident'(id) {
+    const resident = residents.find(item => item.id === id);
+    if (!resident) return;
+    const pending = [];
+    if (state.expenses.some(item => item.status === 'open' && !item.paid.includes(resident.name) && item.shares[resident.name])) pending.push('费用分摊');
+    if (state.chores.some(item => item.owner === resident.name && !item.done)) pending.push('值日');
+    if (state.rules.some(item => !item.confirmed.includes(resident.name))) pending.push('公约确认');
+    modal(`${resident.name}的合租信息`, `<dl class="resident-facts"><div><dt>昵称</dt><dd>${resident.name}</dd></div><div><dt>房间</dt><dd>${resident.room}</dd></div><div><dt>共享居住状态</dt><dd>已入住 · 共同居住中</dd></div><div><dt>待处理摘要</dt><dd>${pending.length ? pending.join('、') : '暂无待处理事项'}</dd></div></dl>`);
+  },
   'show-member-status'() { const model = getHomeModelState(state, me); const chore = state.chores.find(x => x.id === model.choreId); const rule = state.rules.find(x => x.id === model.ruleId); modal('小陈的当前状态', `<p class="helper">${model.debt ? `当前待付款：${money(model.debt)}` : '当前没有待付款费用'}。</p><p class="helper">${chore ? `未完成值日：${chore.name}` : '当前没有未完成值日'}。</p><p class="helper">${rule ? `待确认公约：《${rule.title}》` : '当前没有待确认公约'}。</p>`); },
   'open-pending'() { const model = getHomeModelState(state, me); const chore = state.chores.find(x => x.id === model.choreId); const rule = state.rules.find(x => x.id === model.ruleId); const facts = [`${model.debt ? `待付款费用：${money(model.debt)}` : ''}`, `${chore ? `未完成值日：${chore.name}` : ''}`, `${rule ? `待确认公约：《${rule.title}》` : ''}`].filter(Boolean); modal('当前待处理事项', facts.length ? `<ul class="share-list">${facts.map(fact => `<li><span>${fact}</span></li>`).join('')}</ul>` : '<p class="helper">当前没有待处理事项。</p>'); },
   pay() { const x = openExpenses().find(x => !x.paid.includes(me)); modal('确认已转账', `<p class="helper">请在线下完成转账后，再标记这笔费用。付款人将收到确认提醒。</p><div class="amount">${x.name}<strong>${money(x.shares[me])}</strong></div><button class="primary" id="confirm">我已转账</button>`); document.querySelector('#confirm').onclick = () => { x.paid.push(me); save(); closeModal(); render(); toast('已标记转账，等待小王确认收款'); }; },

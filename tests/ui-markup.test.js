@@ -74,7 +74,7 @@ test('anchors the full home floor plan and its hotspots to one bottom-aligned ca
   assert.match(styleSource, /\.home-model-canvas img\s*\{[^}]*mix-blend-mode:\s*multiply/i);
   assert.doesNotMatch(styleSource, /\.home-model\s*\{[^}]*aspect-ratio:/i);
   assert.doesNotMatch(styleSource, /\.home-model-canvas img\s*\{[^}]*object-fit:\s*cover/i);
-  assert.match(homeSource, /<section class="home-model"[^>]*><div class="home-model-canvas"><img[^>]*><button class="model-hotspot room-hotspot[\s\S]*?<button class="model-hotspot kitchen-hotspot[\s\S]*?<button class="model-hotspot management-hotspot[\s\S]*?<button class="model-hotspot living-hotspot[\s\S]*?<\/button><\/div><\/section>/);
+  assert.match(homeSource, /<section class="home-model"[^>]*><div class="home-model-canvas"><img[^>]*>\$\{residentButtons\}<button class="model-hotspot room-hotspot[\s\S]*?<button class="model-hotspot kitchen-hotspot[\s\S]*?<button class="model-hotspot management-hotspot[\s\S]*?<button class="model-hotspot living-hotspot[\s\S]*?<\/button><\/div><\/section>/);
   assert.match(styleSource, /\.modal\s*\{/i);
   assert.match(styleSource, /#toast\s*\{/i);
   assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
@@ -221,4 +221,24 @@ test('slices supply cards before serializing the life preview', () => {
 
   assert.ok(renderLife, 'app.js should retain renderLife');
   assert.match(renderLife, /const supplyCards = state\.supplies\.map\([\s\S]*?\); const supplies = supplyCards\.slice\(0,2\)\.join\(''\);/);
+});
+
+test('renders three centered resident avatar controls with privacy-safe labels', () => {
+  const renderHome = appSource.match(/function renderHome\(\) \{[\s\S]*?\n\}/)?.[0];
+
+  assert.ok(renderHome, 'app.js should retain renderHome');
+  assert.match(appSource, /const residents = \[[\s\S]*?\];/);
+  assert.equal((appSource.match(/position: 'resident-avatar-/g) || []).length, 3, 'occupied rooms should have exactly three resident avatar positions');
+  assert.match(renderHome, /residents\.map\(resident => `.*resident-avatar/);
+  assert.equal((renderHome.match(/data-action="show-resident"/g) || []).length, 1);
+  for (const resident of ['小王', '小李', '小陈']) {
+    assert.match(appSource, new RegExp(`id: '${resident}', name: '${resident}'`));
+  }
+
+  const residentMarkup = renderHome.slice(renderHome.indexOf('resident-avatar'));
+  assert.doesNotMatch(residentMarkup, /手机号|电话|地址|支付账号|银行卡|身份证/);
+  assert.match(appSource, /['"]show-resident['"]\s*\([^)]*\)/);
+  assert.match(styleSource, /\.resident-avatar\s*\{[^}]*min-width:\s*44px/i);
+  assert.match(styleSource, /\.resident-avatar:focus-visible\s*\{/i);
+  assert.match(styleSource, /\.resident-avatar:active\s*\{/i);
 });
