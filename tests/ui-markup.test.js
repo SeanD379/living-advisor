@@ -41,15 +41,28 @@ test('defines the blue-white visual tokens without the legacy orange gradient', 
   assert.doesNotMatch(styleSource, /linear-gradient\(115deg\s*,\s*#f87e4a\s*,\s*#f8a363\s*\)/i);
 });
 
-test('keeps the blue-white navigation, home model, and motion style contract', () => {
+test('fits the full home floor plan above the bottom navigation', () => {
   assert.match(styleSource, /\.nav button\s*\{[^}]*min-height:\s*44px/i);
   assert.match(styleSource, /\.nav svg\s*\{[^}]*width:/i);
   assert.match(styleSource, /\.nav span\s*\{[^}]*font-size:/i);
   assert.match(styleSource, /:focus-visible\s*\{/i);
   assert.match(styleSource, /\.primary\s*\{/i);
-  assert.match(styleSource, /\.phone-shell\.home-only\s*\{[^}]*padding:\s*0/i);
-  assert.match(styleSource, /\.home-model\s*\{[^}]*aspect-ratio:\s*2\s*\/\s*3/i);
-  assert.match(styleSource, /\.home-model img\s*\{[^}]*object-fit:\s*cover/i);
+  assert.match(styleSource, /\.phone-shell\.home-only\s*\{[^}]*display:\s*flex/i);
+  assert.match(styleSource, /\.phone-shell\.home-only\s*\{[^}]*flex-direction:\s*column/i);
+  assert.match(styleSource, /\.phone-shell\.home-only\s*\{[^}]*min-height:\s*100dvh/i);
+  assert.match(styleSource, /\.phone-shell\.home-only\s*\{[^}]*padding:\s*0\s+0\s+80px/i);
+  assert.match(styleSource, /\.phone-shell\.home-only\s+#app\s*\{[^}]*flex:\s*1/i);
+  assert.match(styleSource, /\.phone-shell\.home-only\s+#app\s*\{[^}]*min-height:\s*0/i);
+  assert.match(styleSource, /\.home-model\s*\{[^}]*flex:\s*1/i);
+  assert.match(styleSource, /\.home-model\s*\{[^}]*min-height:\s*0/i);
+  assert.match(styleSource, /\.home-model\s*\{[^}]*background:\s*var\(--color-page\)/i);
+  assert.match(styleSource, /\.home-model img\s*\{[^}]*position:\s*absolute/i);
+  assert.match(styleSource, /\.home-model img\s*\{[^}]*inset:\s*0/i);
+  assert.match(styleSource, /\.home-model img\s*\{[^}]*object-fit:\s*contain/i);
+  assert.match(styleSource, /\.home-model img\s*\{[^}]*object-position:\s*center\s+bottom/i);
+  assert.match(styleSource, /\.home-model img\s*\{[^}]*mix-blend-mode:\s*multiply/i);
+  assert.doesNotMatch(styleSource, /\.home-model\s*\{[^}]*aspect-ratio:/i);
+  assert.doesNotMatch(styleSource, /\.home-model img\s*\{[^}]*object-fit:\s*cover/i);
   assert.match(styleSource, /\.modal\s*\{/i);
   assert.match(styleSource, /#toast\s*\{/i);
   assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
