@@ -34,7 +34,7 @@ test('centers the home title and dropdown arrow as one accessible group', () => 
   );
 
   assert.ok(topbar, 'compact topbar should remain the shared home title shell');
-  assert.match(topbar.content, /<div class="topbar-title(?: house-title-frame)?"><h1>橘子洲 3A<\/h1><span aria-hidden="true">⌄<\/span><\/div>/);
+  assert.match(topbar.content, /<div class="topbar-title(?: house-title-frame)?"[^>]*><h1>橘子洲 3A<\/h1><span aria-hidden="true">⌄<\/span><\/div>/);
   assert.match(styleSource, /\.topbar\.compact\s*\{[^}]*justify-content:\s*center/i);
   assert.match(styleSource, /\.topbar-title\s*\{[^}]*display:\s*flex/i);
   assert.match(styleSource, /\.topbar-title\s*\{[^}]*align-items:\s*center/i);
@@ -266,4 +266,11 @@ test('uses a decorated house title and removes the redundant profile intro block
   assert.match(css, /\.house-title-frame\s*\{/);
   assert.match(css, /\.house-title-frame::before/);
   assert.doesNotMatch(app, /<p class="eyebrow">我的合租生活<\/p>/);
+});
+
+test('keeps the house title and roommate rules editable', () => {
+  assert.match(html, /data-action="edit-house"/);
+  assert.match(appSource, /'edit-house'\(\)[\s\S]*?id="house-form"/);
+  assert.match(appSource, /'show-rules'\(\)[\s\S]*?id="rule-form"[\s\S]*?<textarea/);
+  assert.match(appSource, /x\.version\s*=\s*form\.get\('version'\)/);
 });
