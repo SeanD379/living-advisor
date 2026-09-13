@@ -24,14 +24,8 @@ function card(icon, title, text, label, action, id) { return `<article class="ac
 function renderHome() {
   const model = getHomeModelState(state, me);
   const hotspots = getHomeHotspotState(model);
-  const debt = model.debt;
-  const chore = state.chores.find(x => x.id === model.choreId);
-  const low = state.supplies.find(x => x.id === model.supplyId);
-  const rule = state.rules.find(x => x.id === model.ruleId);
   return `<section class="home-model" aria-label="橘子洲 3A 合租屋状态模型"><img src="/assets/shared-home-floor-plan.png" alt="橘子洲 3A 的六间卧室、餐厨区、管理角和活动区俯视模型"><button class="model-hotspot room-hotspot ${hotspots.room === 'resolved' ? 'resolved' : ''}" data-action="show-member-status" aria-label="查看小陈的房间状态"><span>小陈的房间状态</span></button><button class="model-hotspot kitchen-hotspot ${hotspots.kitchen === 'resolved' ? 'resolved' : ''}" data-action="show-supplies" aria-label="查看餐厨区物品状态"><span>餐厨区物品状态</span></button><button class="model-hotspot management-hotspot ${hotspots.management === 'resolved' ? 'resolved' : ''}" data-action="open-pending" aria-label="查看管理角待处理事项"><span>管理角待处理事项</span></button><button class="model-hotspot living-hotspot" data-page="life" aria-label="查看活动区生活事项"><span>活动区生活事项</span></button></section>
-    <section class="home-summary" aria-label="待我处理"><section class="section-head"><div><p class="eyebrow">优先处理</p><h2>待我处理 <em>${[debt,chore,low,rule].filter(Boolean).length}</em></h2></div></section>
-    <div class="cards">${debt ? card('pay', '有一笔费用待付款', `9 月电费 · 我需支付 ${money(debt)}`, '去付款', 'pay') : ''}${chore ? card('clean', '今晚该你值日', `${chore.name} · ${chore.due}`, '完成任务', 'chore', chore.id) : ''}${low ? card('supply', `${low.name}快用完了`, `剩余 ${low.quantity} ${low.unit}，建议补到 4 ${low.unit}`, '认领补货', 'claim', low.id) : ''}${rule ? card('rule', '请确认一条新公约', `《${rule.title}》`, '查看并确认', 'rule', rule.id) : ''}</div></section>
-    <section class="quick"><div class="section-head"><h2>生活小事</h2><button data-page="life">查看全部</button></div><div class="quick-grid"><button data-page="expenses"><span>＋</span>记一笔</button><button data-page="life"><span>✓</span>值日表</button><button data-page="life"><span>▣</span>物品清单</button><button data-page="life"><span>⌁</span>室友公约</button></div></section>`;
+    `;
 }
 function renderExpenses() {
   const list = state.expenses.map(x => { const mine = x.shares[me] || 0; const settled = x.paid.length + 1; return `<article class="expense"><div class="expense-title"><span class="expense-icon">⚡</span><div><h3>${x.name}</h3><p>${x.date} · ${x.payer}垫付</p></div><strong>${money(x.amount)}</strong></div><div class="expense-bottom"><span>${settled}/3 已结清</span><span>${x.status === 'checking' ? '待核对' : x.paid.includes(me) ? '我已转账' : `我应付 ${money(mine)}`}</span></div><button class="link-btn" data-action="detail" data-id="${x.id}">查看分摊明细 →</button></article>`; }).join('');
