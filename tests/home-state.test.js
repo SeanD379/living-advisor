@@ -8,6 +8,7 @@ const {
   getHomeHotspotState,
   inviteResident,
   moveOutResident,
+  transferAdmin,
 } = require('../public/home-state.js');
 
 test('derives all four pending model hotspots for 小陈', () => {
@@ -120,4 +121,17 @@ test('requires an administrator successor before the administrator can move out'
   assert.equal(state.household.adminId, '小王');
   assert.deepEqual(activeResidents(state).map((member) => member.name), ['小王']);
   assert.deepEqual(state.household.history.map((event) => event.type), ['退租', '管理员转让']);
+});
+
+test('lets the active administrator transfer management without moving out', () => {
+  const state = { household: { adminId: '小陈', members: [
+    { id: '小陈', name: '小陈', status: 'active' },
+    { id: '小王', name: '小王', status: 'active' },
+  ], history: [] } };
+
+  transferAdmin(state, '小陈', '小王', '2026-09-14');
+
+  assert.equal(state.household.adminId, '小王');
+  assert.deepEqual(activeResidents(state).map((member) => member.name), ['小陈', '小王']);
+  assert.deepEqual(state.household.history, [{ type: '管理员转让', from: '小陈', to: '小王', date: '2026-09-14' }]);
 });

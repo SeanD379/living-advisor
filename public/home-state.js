@@ -38,16 +38,21 @@ function moveOutResident(state, memberId, date, successorId) {
   if (activeResidents(state).length === 1) throw new Error('至少保留一名当前成员');
   if (state.household.adminId === memberId && !successorId) throw new Error('请选择接任管理员');
 
-  if (successorId) {
-    const successor = activeResidents(state).find((item) => item.id === successorId && item.id !== memberId);
-    if (!successor) throw new Error('接任管理员必须是当前成员');
-    state.household.adminId = successor.id;
-    state.household.history.unshift({ type: '管理员转让', from: member.name, to: successor.name, date });
-  }
+  if (state.household.adminId === memberId) transferAdmin(state, memberId, successorId, date);
 
   member.status = 'moved-out';
   member.movedOutAt = date;
   state.household.history.unshift({ type: '退租', member: member.name, date });
+}
+
+function transferAdmin(state, currentAdminId, successorId, date) {
+  if (state.household.adminId !== currentAdminId) throw new Error('只有当前管理员可以转让管理权');
+  const currentAdmin = activeResidents(state).find((item) => item.id === currentAdminId);
+  const successor = activeResidents(state).find((item) => item.id === successorId && item.id !== currentAdminId);
+  if (!currentAdmin || !successor) throw new Error('接任管理员必须是当前成员');
+
+  state.household.adminId = successor.id;
+  state.household.history.unshift({ type: '管理员转让', from: currentAdmin.name, to: successor.name, date });
 }
 
 function getHomeHotspotState(modelState) {
@@ -67,6 +72,7 @@ if (typeof module !== 'undefined') {
     getHomeHotspotState,
     inviteResident,
     moveOutResident,
+    transferAdmin,
   };
 }
 
@@ -77,4 +83,5 @@ if (typeof window !== 'undefined') {
   window.getHomeHotspotState = getHomeHotspotState;
   window.inviteResident = inviteResident;
   window.moveOutResident = moveOutResident;
+  window.transferAdmin = transferAdmin;
 }

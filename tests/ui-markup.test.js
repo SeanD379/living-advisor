@@ -309,6 +309,14 @@ test('keeps house labels and life dates dynamic on small screens', () => {
   assert.match(styleSource, /\.house-title-frame\s*\{[^}]*max-width:/i);
 });
 
+test('preserves each expense participant count and exposes a standalone admin transfer form', () => {
+  assert.match(appSource, /const participantCount = Object\.keys\(x\.shares\)\.length;/);
+  assert.match(appSource, /\$\{settled\}\/\$\{participantCount\} 已结清/);
+  assert.match(appSource, /data-action="transfer-admin"/);
+  assert.match(appSource, /'transfer-admin'\(\)[\s\S]*?<form id="transfer-admin-form">/);
+  assert.match(appSource, /<label for="new-admin-id">接任管理员<\/label><select id="new-admin-id" name="successorId" required/);
+});
+
 test('renders member management from active resident state and exposes its action', () => {
   assert.match(appSource, /data-action="show-members"/);
   assert.match(appSource, /function renderMembers\(\)/);
