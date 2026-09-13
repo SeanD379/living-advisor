@@ -41,7 +41,9 @@ test('defines the blue-white visual tokens without the legacy orange gradient', 
   assert.doesNotMatch(styleSource, /linear-gradient\(115deg\s*,\s*#f87e4a\s*,\s*#f8a363\s*\)/i);
 });
 
-test('fits the full home floor plan above the bottom navigation', () => {
+test('anchors the full home floor plan and its hotspots to one bottom-aligned canvas', () => {
+  const homeSource = appSource.slice(appSource.indexOf('function renderHome()'), appSource.indexOf('function renderExpenses()'));
+
   assert.match(styleSource, /\.nav button\s*\{[^}]*min-height:\s*44px/i);
   assert.match(styleSource, /\.nav svg\s*\{[^}]*width:/i);
   assert.match(styleSource, /\.nav span\s*\{[^}]*font-size:/i);
@@ -55,14 +57,24 @@ test('fits the full home floor plan above the bottom navigation', () => {
   assert.match(styleSource, /\.phone-shell\.home-only\s+#app\s*\{[^}]*min-height:\s*0/i);
   assert.match(styleSource, /\.home-model\s*\{[^}]*flex:\s*1/i);
   assert.match(styleSource, /\.home-model\s*\{[^}]*min-height:\s*0/i);
+  assert.match(styleSource, /\.home-model\s*\{[^}]*display:\s*flex/i);
+  assert.match(styleSource, /\.home-model\s*\{[^}]*flex-direction:\s*column/i);
+  assert.match(styleSource, /\.home-model\s*\{[^}]*align-items:\s*center/i);
+  assert.match(styleSource, /\.home-model\s*\{[^}]*justify-content:\s*flex-end/i);
   assert.match(styleSource, /\.home-model\s*\{[^}]*background:\s*var\(--color-page\)/i);
-  assert.match(styleSource, /\.home-model img\s*\{[^}]*position:\s*absolute/i);
-  assert.match(styleSource, /\.home-model img\s*\{[^}]*inset:\s*0/i);
-  assert.match(styleSource, /\.home-model img\s*\{[^}]*object-fit:\s*contain/i);
-  assert.match(styleSource, /\.home-model img\s*\{[^}]*object-position:\s*center\s+bottom/i);
-  assert.match(styleSource, /\.home-model img\s*\{[^}]*mix-blend-mode:\s*multiply/i);
+  assert.match(styleSource, /\.home-model-canvas\s*\{[^}]*position:\s*relative/i);
+  assert.match(styleSource, /\.home-model-canvas\s*\{[^}]*width:\s*100%/i);
+  assert.match(styleSource, /\.home-model-canvas\s*\{[^}]*aspect-ratio:\s*2\s*\/\s*3/i);
+  assert.match(styleSource, /\.home-model-canvas\s*\{[^}]*flex:\s*0\s+0\s+auto/i);
+  assert.match(styleSource, /\.home-model-canvas img\s*\{[^}]*display:\s*block/i);
+  assert.match(styleSource, /\.home-model-canvas img\s*\{[^}]*width:\s*100%/i);
+  assert.match(styleSource, /\.home-model-canvas img\s*\{[^}]*height:\s*100%/i);
+  assert.match(styleSource, /\.home-model-canvas img\s*\{[^}]*object-fit:\s*contain/i);
+  assert.match(styleSource, /\.home-model-canvas img\s*\{[^}]*object-position:\s*center\s+bottom/i);
+  assert.match(styleSource, /\.home-model-canvas img\s*\{[^}]*mix-blend-mode:\s*multiply/i);
   assert.doesNotMatch(styleSource, /\.home-model\s*\{[^}]*aspect-ratio:/i);
-  assert.doesNotMatch(styleSource, /\.home-model img\s*\{[^}]*object-fit:\s*cover/i);
+  assert.doesNotMatch(styleSource, /\.home-model-canvas img\s*\{[^}]*object-fit:\s*cover/i);
+  assert.match(homeSource, /<section class="home-model"[^>]*><div class="home-model-canvas"><img[^>]*><button class="model-hotspot room-hotspot[\s\S]*?<button class="model-hotspot kitchen-hotspot[\s\S]*?<button class="model-hotspot management-hotspot[\s\S]*?<button class="model-hotspot living-hotspot[\s\S]*?<\/button><\/div><\/section>/);
   assert.match(styleSource, /\.modal\s*\{/i);
   assert.match(styleSource, /#toast\s*\{/i);
   assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
