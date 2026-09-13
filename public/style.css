@@ -43,7 +43,8 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .phone-shell { min-height: 100vh; max-width: 480px; margin: auto; padding: 24px 16px 104px; background: var(--color-page); }
 .topbar, .page-title, .section-head, .expense-bottom, .life-card, .supply, .profile-card { display: flex; align-items: center; }
 .topbar, .page-title, .section-head { justify-content: space-between; }
-.topbar.compact { justify-content: center; padding: 4px 0; }
+.topbar.compact { position: relative; justify-content: center; padding: 4px 0; }
+.home-status-link { position: absolute; right: 12px; min-height: 36px; padding: 0 10px; border: 1px solid var(--color-divider); border-radius: 999px; background: var(--color-surface); color: var(--color-primary-text); font-size: 12px; font-weight: 600; }
 .topbar-title { display: flex; align-items: center; gap: 4px; }
 .house-title-frame { position: relative; padding: 8px 24px; border: 1px solid var(--color-divider); border-radius: 18px; background: var(--color-surface); box-shadow: 0 4px 14px rgba(29, 29, 31, 0.08); cursor: pointer; }
 .house-title-frame::before, .house-title-frame::after { position: absolute; top: 50%; width: 10px; height: 10px; content: ''; border-top: 1.5px solid var(--color-primary); border-bottom: 1.5px solid var(--color-primary); transform: translateY(-50%); }
@@ -163,11 +164,10 @@ textarea { display: block; width: 100%; margin-top: 5px; padding: 10px 12px; bor
 .model-hotspot { position: absolute; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: transparent; }
 .model-hotspot::after { position: absolute; top: 50%; left: 50%; width: 12px; height: 12px; content: ''; transform: translate(-50%, -50%); border: 2px solid #fff; border-radius: 50%; background: var(--color-primary); box-shadow: 0 1px 5px rgba(29, 29, 31, 0.32); }
 .model-hotspot.resolved::after { display: none; }
-.hotspot-room::after, .hotspot-management::after { background: var(--color-primary); }
+.hotspot-management::after { background: var(--color-primary); }
 .hotspot-kitchen.active::after { background: var(--color-supply); }
 .hotspot-living.active::after { background: var(--color-success); }
 .model-hotspot:focus-visible { outline-color: var(--color-focus); outline-offset: 3px; }
-.room-hotspot { top: 55%; left: 18%; }
 .kitchen-hotspot { top: 13%; right: 18%; }
 .management-hotspot { top: 31%; left: 45%; }
 .living-hotspot { bottom: 7%; left: 42%; }

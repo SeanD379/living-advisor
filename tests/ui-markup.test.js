@@ -86,7 +86,8 @@ test('anchors the full home floor plan and its hotspots to one bottom-aligned ca
   assert.match(styleSource, /\.home-model-canvas img\s*\{[^}]*mix-blend-mode:\s*multiply/i);
   assert.doesNotMatch(styleSource, /\.home-model\s*\{[^}]*aspect-ratio:/i);
   assert.doesNotMatch(styleSource, /\.home-model-canvas img\s*\{[^}]*object-fit:\s*cover/i);
-  assert.match(homeSource, /<section class="home-model"[^>]*><div class="home-model-canvas"><img[^>]*>\$\{residentButtons\}<button class="model-hotspot room-hotspot[\s\S]*?<button class="model-hotspot kitchen-hotspot[\s\S]*?<button class="model-hotspot management-hotspot[\s\S]*?<button class="model-hotspot living-hotspot[\s\S]*?<\/button><\/div><\/section>/);
+  assert.match(homeSource, /<section class="home-model"[^>]*><div class="home-model-canvas"><img[^>]*>\$\{residentButtons\}<button class="model-hotspot kitchen-hotspot[\s\S]*?<button class="model-hotspot management-hotspot[\s\S]*?<button class="model-hotspot living-hotspot[\s\S]*?<\/button><\/div><\/section>/);
+  assert.doesNotMatch(homeSource, /room-hotspot|小陈的房间状态/);
   assert.match(styleSource, /\.modal\s*\{/i);
   assert.match(styleSource, /#toast\s*\{/i);
   assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
@@ -216,12 +217,12 @@ test('renders local semantic class hooks without changing home hotspot actions',
   }
 
   for (const [className, action] of [
-    ['hotspot-room', 'show-member-status'],
     ['hotspot-kitchen', 'show-supplies'],
     ['hotspot-management', 'open-pending'],
   ]) {
     assert.match(appSource, new RegExp(`class=["'][^"']*\\b${className}\\b[^"']*["'][^>]*data-action=["']${action}["']`));
   }
+  assert.match(html, /class="home-status-link"[^>]*data-action="show-member-status"/);
   assert.match(appSource, /class=["'][^"']*\bhotspot-living\b[^"']*["'][^>]*data-page=["']life["']/);
   for (const sourceContract of ['function go(next)', 'function actionButtons()', 'const actions = {', 'function purchase(x)']) {
     assert.ok(appSource.includes(sourceContract), `app.js should retain ${sourceContract}`);
