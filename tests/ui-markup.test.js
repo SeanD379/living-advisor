@@ -5,6 +5,7 @@ const test = require('node:test');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'public', 'index.html'), 'utf8');
 const appSource = fs.readFileSync(path.join(__dirname, '..', 'public', 'app.js'), 'utf8');
+const styleSource = fs.readFileSync(path.join(__dirname, '..', 'public', 'style.css'), 'utf8');
 
 function attribute(attributes, name) {
   const match = new RegExp(`(?:^|\\s)${name}\\s*=\\s*(["'])(.*?)\\1`).exec(attributes);
@@ -25,6 +26,19 @@ test('uses the Apple blue browser theme color', () => {
   assert.ok(openingTags(html, 'meta').some((attributes) =>
     attribute(attributes, 'name') === 'theme-color' && attribute(attributes, 'content') === '#007AFF',
   ));
+});
+
+test('defines the blue-white visual tokens without the legacy orange gradient', () => {
+  for (const token of [
+    '--color-page: #F5F7FA',
+    '--color-surface: #FFFFFF',
+    '--color-text: #1D1D1F',
+    '--color-primary: #007AFF',
+  ]) {
+    assert.ok(styleSource.includes(token), `style.css should define ${token}`);
+  }
+
+  assert.doesNotMatch(styleSource, /linear-gradient\(115deg\s*,\s*#f87e4a\s*,\s*#f8a363\s*\)/i);
 });
 
 test('renders an accessible primary navigation shell', () => {
