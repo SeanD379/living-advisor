@@ -90,8 +90,15 @@ function renderMembers() {
   return `<section class="page-title"><div><p class="eyebrow">合租成员</p><h2>成员与邀请</h2></div></section><section class="member-list"><h3>当前入住 · ${members.length} 人</h3>${current}</section>${canManage ? '<button class="primary" data-action="invite-resident">邀请新成员</button>' : ''}${canTransfer ? '<button class="outline" data-action="transfer-admin">转让管理权</button>' : ''}<section class="member-history"><h3>最近变动</h3><ul class="share-list">${history}</ul></section>`;
 }
 function renderProfile() { return `<section class="profile-card"><span class="profile-avatar">陈</span><div><h3>${houseName()}</h3><p>成员 · 结算日每月 28 日</p></div></section><div class="settings"><button data-action="show-members">成员与邀请 <i>›</i></button><button>默认费用规则 <i>›</i></button><button>通知设置 <i>›</i></button></div><button class="reset" data-action="reset">重置演示数据</button>`; }
-function render() { document.querySelector('.phone-shell').classList.toggle('home-only', page === 'home'); app.innerHTML = page === 'home' ? renderHome() : page === 'expenses' ? renderExpenses() : page === 'life' ? renderLife() : page === 'members' ? renderMembers() : renderProfile(); document.querySelector('.topbar-title h1').textContent = houseName(); const statusLink = document.querySelector('.home-status-link'); if (statusLink) { const model = getHomeModelState(state, me); const pendingCount = [model.debt > 0, model.choreId !== null, model.supplyId !== null, model.ruleId !== null].filter(Boolean).length; statusLink.textContent = pendingCount ? `我的状态 · ${pendingCount}` : '我的状态 · 已完成'; statusLink.setAttribute('aria-label', pendingCount ? `查看我的${pendingCount}项待处理事项` : '查看我的待处理事项，当前已完成'); } document.querySelectorAll('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page)); actionButtons(); }
+function updateHeaderBackLink() {
+  const topbar = document.querySelector('.topbar');
+  const existing = topbar.querySelector('.back-link');
+  if (page === 'members' && !existing) topbar.insertAdjacentHTML('afterbegin', '<button class="back-link" data-action="back-to-profile" aria-label="返回我的">‹ <span>我的</span></button>');
+  if (page !== 'members') existing?.remove();
+}
+function render() { document.querySelector('.phone-shell').classList.toggle('home-only', page === 'home'); app.innerHTML = page === 'home' ? renderHome() : page === 'expenses' ? renderExpenses() : page === 'life' ? renderLife() : page === 'members' ? renderMembers() : renderProfile(); document.querySelector('.topbar-title h1').textContent = houseName(); updateHeaderBackLink(); const statusLink = document.querySelector('.home-status-link'); if (statusLink) { const model = getHomeModelState(state, me); const pendingCount = [model.debt > 0, model.choreId !== null, model.supplyId !== null, model.ruleId !== null].filter(Boolean).length; statusLink.textContent = pendingCount ? `我的状态 · ${pendingCount}` : '我的状态 · 已完成'; statusLink.setAttribute('aria-label', pendingCount ? `查看我的${pendingCount}项待处理事项` : '查看我的待处理事项，当前已完成'); } document.querySelectorAll('[data-page]').forEach(b => b.onclick = () => go(b.dataset.page)); actionButtons(); }
 const actions = {
+  'back-to-profile'() { go('profile'); },
   'show-members'() { page = 'members'; render(); },
   'transfer-admin'() {
     if (state.household.adminId !== me) return;

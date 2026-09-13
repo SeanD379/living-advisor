@@ -46,6 +46,8 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 .topbar, .page-title, .section-head, .expense-bottom, .life-card, .supply, .profile-card { display: flex; align-items: center; }
 .topbar, .page-title, .section-head { justify-content: space-between; }
 .topbar.compact { position: relative; justify-content: center; padding: 4px 0; }
+.back-link { position: absolute; left: 8px; display: inline-flex; min-height: 44px; align-items: center; gap: 2px; padding: 0 8px; border: 0; background: transparent; color: var(--color-primary-text); font-size: 14px; font-weight: 600; }
+.back-link:first-letter { font-size: 28px; font-weight: 400; line-height: 1; }
 .home-status-link { position: absolute; right: 12px; min-height: 36px; padding: 0 10px; border: 1px solid var(--color-divider); border-radius: 999px; background: var(--color-surface); color: var(--color-primary-text); font-size: 12px; font-weight: 600; }
 .home-status-link:active { opacity: 0.72; transform: scale(0.97); }
 .topbar-title { display: flex; align-items: center; gap: 4px; }

@@ -345,3 +345,9 @@ test('styles member management sections and keeps member actions touch-friendly'
   }
   assert.match(styleSource, /\.member-action\s*\{[^}]*min-height:\s*44px/i);
 });
+
+test('provides an accessible return action from member management to my page', () => {
+  assert.match(appSource, /data-action="back-to-profile"[^>]*aria-label="返回我的"/);
+  assert.match(appSource, /'back-to-profile'\(\)\s*\{\s*go\('profile'\);\s*\}/);
+  assert.match(styleSource, /\.back-link\s*\{[^}]*min-height:\s*44px/i);
+});
