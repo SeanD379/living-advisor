@@ -236,21 +236,19 @@ test('slices supply cards before serializing the life preview', () => {
   assert.match(renderLife, /const supplyCards = state\.supplies\.map\([\s\S]*?\); const supplies = supplyCards\.slice\(0,2\)\.join\(''\);/);
 });
 
-test('renders three centered resident avatar controls with privacy-safe labels', () => {
+test('renders active resident avatar controls with privacy-safe labels', () => {
   const renderHome = appSource.match(/function renderHome\(\) \{[\s\S]*?\n\}/)?.[0];
 
   assert.ok(renderHome, 'app.js should retain renderHome');
-  assert.match(appSource, /const residents = \[[\s\S]*?\];/);
-  assert.equal((appSource.match(/position: 'resident-avatar-/g) || []).length, 3, 'occupied rooms should have exactly three resident avatar positions');
-  assert.match(renderHome, /residents\.map\(resident =>[\s\S]*resident-avatar/);
+  assert.match(appSource, /household:\s*\{[\s\S]*?members:/);
+  assert.equal((appSource.match(/status: 'active'/g) || []).length, 3, 'initial household should have three active residents');
+  assert.match(renderHome, /activeResidents\(state\)\.map\(resident =>[\s\S]*resident-avatar/);
   assert.equal((renderHome.match(/data-action="show-resident"/g) || []).length, 1);
   assert.match(renderHome, /const pendingCount = \[[\s\S]*?\]\.filter\(Boolean\)\.length/);
   assert.match(renderHome, /data-status="\$\{residentPending \? 'pending' : 'settled'\}"/);
   assert.match(html, /class="home-status-link"[^>]*data-action="show-member-status"/);
   assert.match(html, /class="home-status-link"[^>]*aria-label="查看我的待处理事项"/);
-  for (const resident of ['小王', '小李', '小陈']) {
-    assert.match(appSource, new RegExp(`id: '${resident}', name: '${resident}'`));
-  }
+  assert.match(appSource, /adminId: '小陈'/);
 
   const residentMarkup = renderHome.slice(renderHome.indexOf('resident-avatar'));
   assert.doesNotMatch(residentMarkup, /手机号|电话|地址|支付账号|银行卡|身份证/);
@@ -309,4 +307,14 @@ test('keeps house labels and life dates dynamic on small screens', () => {
   assert.doesNotMatch(appSource, /9 月 · 第 2 周/);
   assert.match(styleSource, /@media\s*\(max-width:\s*375px\)/i);
   assert.match(styleSource, /\.house-title-frame\s*\{[^}]*max-width:/i);
+});
+
+test('renders member management from active resident state and exposes its action', () => {
+  assert.match(appSource, /data-action="show-members"/);
+  assert.match(appSource, /function renderMembers\(\)/);
+  assert.match(appSource, /activeResidents\(state\)/);
+  assert.match(appSource, /data-action="invite-resident"/);
+  assert.match(appSource, /data-action="move-out-resident"/);
+  assert.match(appSource, /管理员/);
+  assert.match(appSource, /最近变动/);
 });
