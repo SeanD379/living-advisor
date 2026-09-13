@@ -109,7 +109,9 @@ const actions = {
     if (!member) return;
     const isAdmin = id === state.household.adminId;
     const successors = activeResidents(state).filter((item) => item.id !== id);
-    modal(`办理${member.name}退租`, `<form id="move-out-form"><label for="move-out-date">生效日期</label><input id="move-out-date" name="date" type="date" required value="2026-09-14">${isAdmin ? `<label for="successor-id">接任管理员</label><select id="successor-id" name="successorId" required><option value="">请选择</option>${successors.map((item) => `<option value="${item.id}">${item.name} · ${item.room}</option>`).join('')}</select>` : ''}<button class="primary">确认办理退租</button></form>`);
+    const memberOpenExpenses = state.expenses.filter((expense) => expense.status === 'open' && !expense.paid.includes(member.name) && expense.shares[member.name]);
+    const unpaidWarning = memberOpenExpenses.length ? `<p class="helper">未结费用：${memberOpenExpenses.length} 笔，共 ${money(memberOpenExpenses.reduce((total, expense) => total + expense.shares[member.name], 0))}。退租后仍可在历史账单中追溯。</p>` : '';
+    modal(`办理${member.name}退租`, `${unpaidWarning}<form id="move-out-form"><label for="move-out-date">生效日期</label><input id="move-out-date" name="date" type="date" required value="2026-09-14">${isAdmin ? `<label for="successor-id">接任管理员</label><select id="successor-id" name="successorId" required><option value="">请选择</option>${successors.map((item) => `<option value="${item.id}">${item.name} · ${item.room}</option>`).join('')}</select>` : ''}<button class="primary">确认办理退租</button></form>`);
     document.querySelector('#move-out-form').onsubmit = (event) => {
       event.preventDefault();
       const form = new FormData(event.target);

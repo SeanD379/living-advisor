@@ -318,3 +318,9 @@ test('renders member management from active resident state and exposes its actio
   assert.match(appSource, /管理员/);
   assert.match(appSource, /最近变动/);
 });
+
+test('warns about a member’s unpaid open expenses before move-out without blocking it', () => {
+  assert.match(appSource, /未结费用/);
+  assert.match(appSource, /memberOpenExpenses/);
+  assert.match(appSource, /确认办理退租/);
+});
