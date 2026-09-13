@@ -55,6 +55,7 @@ h1 span { color: var(--color-secondary); font-size: 17px; font-weight: 500; }
 .section-head button, .filter button, .week button, .link-btn { min-height: 36px; padding: 0 4px; border: 0; background: transparent; color: var(--color-primary); }
 .cards, .expense-list { display: grid; gap: 12px; }
 .action-card, .expense, .life-card, .profile-card, .settings, .summary { border: 1px solid var(--color-divider); border-radius: var(--radius-card); background: var(--color-surface); box-shadow: var(--shadow-card); }
+.expense, .life-card, .profile-card, .settings { background: var(--color-surface); }
 .action-card { display: flex; align-items: center; gap: 12px; padding: 16px; }
 .card-icon { display: grid; width: 40px; height: 40px; flex: 0 0 40px; place-items: center; border-radius: 14px; font-size: 18px; font-weight: 700; }
 .pay { background: #fff1dd; color: #bd6900; }
@@ -116,7 +117,7 @@ h1 span { color: var(--color-secondary); font-size: 17px; font-weight: 500; }
 .reset { display: block; min-height: 44px; margin: 24px auto; border: 0; background: transparent; color: var(--color-danger); font-size: 12px; }
 
 .overlay { position: fixed; inset: 0; z-index: 10; display: flex; align-items: end; justify-content: center; background: rgba(29, 29, 31, 0.35); }
-.modal { position: relative; width: min(480px, 100%); padding: 24px 20px 30px; border-radius: 24px 24px 0 0; background: var(--color-surface); box-shadow: 0 -6px 24px rgba(29, 29, 31, 0.1); animation: up 0.2s ease-out; }
+.modal { position: relative; width: min(480px, 100%); padding: 24px 20px 30px; border-radius: 24px 24px 0 0; background: var(--color-surface); box-shadow: 0 -6px 24px rgba(29, 29, 31, 0.1); animation: sheet-up 0.2s ease-out; }
 .modal h2 { margin-bottom: 16px; font-size: 21px; }
 .modal h3 { margin-bottom: 8px; }
 .close { position: absolute; top: 12px; right: 14px; display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--color-secondary); font-size: 28px; }
@@ -134,7 +135,7 @@ input, select { display: block; width: 100%; min-height: 44px; margin-top: 5px; 
 
 #toast { position: fixed; z-index: 20; bottom: 94px; left: 50%; max-width: 80%; padding: 10px 14px; border-radius: 20px; background: var(--color-text); color: #fff; font-size: 12px; opacity: 0; transform: translate(-50%, 10px); transition: 0.25s; }
 .show { opacity: 1 !important; transform: translate(-50%, 0) !important; }
-@keyframes up { from { transform: translateY(30px); } to { transform: translateY(0); } }
+@keyframes sheet-up { from { transform: translateY(30px); } to { transform: translateY(0); } }
 
 .phone-shell.home-only { padding: 0; }
 .home-model { position: relative; aspect-ratio: 2/3; margin: 0; overflow: hidden; }

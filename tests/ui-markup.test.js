@@ -56,6 +56,24 @@ test('keeps the blue-white navigation, home model, and motion style contract', (
   assert.match(styleSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
 });
 
+test('keeps surfaces, local semantic colors, and motion details in the blue-white system', () => {
+  assert.match(styleSource, /\.modal\s*\{[^}]*animation:\s*sheet-up/i);
+  assert.match(styleSource, /#toast\s*\{[^}]*transition:/i);
+  assert.match(styleSource, /\.expense,\s*\.life-card,\s*\.profile-card,\s*\.settings\s*\{[^}]*background:\s*var\(--color-surface\)/i);
+  assert.match(styleSource, /input,\s*select\s*\{[^}]*background:\s*var\(--color-surface\)/i);
+
+  for (const selector of ['.pay', '.clean', '.supply-pic', '.rule', '.stock']) {
+    assert.match(styleSource, new RegExp(`\\${selector}\\s*\\{`, 'i'));
+  }
+  for (const selector of ['body', '\\.phone-shell', '\\.summary']) {
+    assert.doesNotMatch(styleSource, new RegExp(`${selector}\\s*\\{[^}]*var\\(--color-(?:expense|success|supply|rule|danger)`, 'i'));
+  }
+
+  assert.match(styleSource, /\.home-model\s*\{[^}]*margin:\s*0/i);
+  assert.doesNotMatch(styleSource, /#(?:000|111|0A0A0A|6C00FF|7B61FF)\b/i);
+  assert.doesNotMatch(styleSource, /linear-gradient\s*\(/i);
+});
+
 test('renders an accessible primary navigation shell', () => {
   const nav = elements(html, 'nav').find((element) =>
     attribute(element.attributes, 'class') === 'nav' && attribute(element.attributes, 'aria-label') === '主导航',
