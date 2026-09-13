@@ -10,10 +10,14 @@
   --color-primary-action: #0066CC;
   --color-primary-soft: #EAF3FF;
   --color-expense: #FF9500;
+  --color-expense-text: #9A5A00;
   --color-success: #34C759;
+  --color-success-text: #16803A;
   --color-supply: #FFCC00;
   --color-rule: #AF52DE;
   --color-danger: #FF3B30;
+  --color-danger-text: #B42318;
+  --color-danger-action: #C5221F;
   --shadow-card: 0 4px 16px rgba(29, 29, 31, 0.06);
   --radius-card: 20px;
 }
@@ -47,14 +51,14 @@ h1 span { color: var(--color-secondary); font-size: 17px; font-weight: 500; }
 
 .avatar, .round-add { display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: 50%; background: var(--color-primary-soft); color: var(--color-primary); font-size: 20px; font-weight: 600; }
 .settlement { display: flex; align-items: center; justify-content: space-between; margin: 20px 0 28px; padding: 20px; border-radius: var(--radius-card); background: var(--color-primary-action); color: #fff; box-shadow: 0 8px 20px rgba(0, 102, 204, 0.22); }
-.settlement p, .settlement small { font-size: 12px; opacity: 0.88; }
+.settlement p, .settlement small { font-size: 12px; }
 .settlement strong, .summary strong, .expense-title strong, .amount strong { font-size: 23px; font-variant-numeric: tabular-nums; }
 .faces { display: flex; }
 .faces b { display: grid; width: 30px; height: 30px; margin-left: -6px; place-items: center; border: 2px solid var(--color-primary); border-radius: 50%; background: #dcecff; color: #145bb2; font-size: 11px; }
 .faces .me { background: #dff6e5; color: #22843d; }
 
 .section-head { margin: 0 0 12px; }
-.section-head em { display: inline-grid; width: 19px; height: 19px; place-items: center; border-radius: 50%; background: var(--color-danger); color: #fff; font-size: 11px; font-style: normal; }
+.section-head em { display: inline-grid; width: 19px; height: 19px; place-items: center; border-radius: 50%; background: var(--color-danger-action); color: #fff; font-size: 11px; font-style: normal; }
 .section-head button, .filter button, .week button, .link-btn { min-height: 36px; padding: 0 4px; border: 0; background: transparent; color: var(--color-primary-text); }
 .cards, .expense-list { display: grid; gap: 12px; }
 .action-card, .expense, .life-card, .profile-card, .settings, .summary { border: 1px solid var(--color-divider); border-radius: var(--radius-card); background: var(--color-surface); box-shadow: var(--shadow-card); }
@@ -90,7 +94,7 @@ h1 span { color: var(--color-secondary); font-size: 17px; font-weight: 500; }
 .expense-icon { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 12px; background: #fff1dd; color: var(--color-expense); }
 .expense-title strong { margin-left: auto; font-size: 18px; }
 .expense-bottom { justify-content: space-between; margin: 12px 0 6px; color: var(--color-secondary); font-size: 12px; }
-.expense-bottom span:last-child { color: var(--color-expense); }
+.expense-bottom span:last-child { color: var(--color-expense-text); }
 
 .tabs { display: flex; gap: 24px; margin-bottom: 18px; border-bottom: 1px solid var(--color-divider); }
 .tab { min-height: 40px; padding: 8px 1px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--color-secondary); }
@@ -103,13 +107,13 @@ h1 span { color: var(--color-secondary); font-size: 17px; font-weight: 500; }
 .date-badge b { font-size: 16px; }
 .life-card > div, .supply > div { flex: 1; }
 .life-card > span { color: var(--color-secondary); font-size: 12px; }
-.done { color: var(--color-success) !important; font-weight: 600; }
+.done { color: var(--color-success-text) !important; font-weight: 600; }
 .outline { width: 100%; min-height: 44px; margin: 2px 0 26px; border: 1px solid var(--color-primary); border-radius: 12px; background: transparent; color: var(--color-primary-text); }
 .supply-preview { padding-top: 2px; }
 .supply { gap: 10px; padding: 12px 0; background: transparent; }
 .supply-pic { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 12px; background: #fff8d9; color: #9a7400; font-size: 17px; }
 .stock { padding: 4px 8px; border-radius: 8px; background: #e4f7ea; color: #23833e; font-size: 11px; }
-.stock.low { background: #fff1dd; color: #bd6900; }
+.stock.low { background: #fff1dd; color: var(--color-expense-text); }
 
 .profile-card { gap: 12px; padding: 18px; }
 .profile-card > span { display: grid; width: 44px; height: 44px; place-items: center; border-radius: 50%; background: var(--color-primary-soft); color: var(--color-primary); font-weight: 700; }
@@ -117,7 +121,7 @@ h1 span { color: var(--color-secondary); font-size: 17px; font-weight: 500; }
 .settings { display: grid; gap: 1px; margin-top: 18px; overflow: hidden; }
 .settings button { display: flex; min-height: 52px; justify-content: space-between; padding: 14px 16px; border: 0; background: var(--color-surface); color: var(--color-text); text-align: left; }
 .settings i { color: var(--color-secondary); font-size: 22px; font-style: normal; line-height: 18px; }
-.reset { display: block; min-height: 44px; margin: 24px auto; border: 0; background: transparent; color: var(--color-danger); font-size: 12px; }
+.reset { display: block; min-height: 44px; margin: 24px auto; border: 0; background: transparent; color: var(--color-danger-text); font-size: 12px; }
 
 .overlay { position: fixed; inset: 0; z-index: 10; display: flex; align-items: end; justify-content: center; background: rgba(29, 29, 31, 0.35); }
 .modal { position: relative; width: min(480px, 100%); padding: 24px 20px 30px; border-radius: 24px 24px 0 0; background: var(--color-surface); box-shadow: 0 -6px 24px rgba(29, 29, 31, 0.1); animation: sheet-up 0.2s ease-out; }
@@ -133,7 +137,7 @@ label { display: block; margin: 12px 0; color: var(--color-secondary); font-size
 input, select { display: block; width: 100%; min-height: 44px; margin-top: 5px; padding: 10px 12px; border: 1px solid var(--color-divider); border-radius: 12px; background: var(--color-surface); color: var(--color-text); }
 .share-list { padding: 0; margin: 0; list-style: none; }
 .share-list li { display: grid; grid-template-columns: 1fr auto auto; gap: 11px; padding: 12px 0; border-bottom: 1px solid var(--color-divider); }
-.share-list small { color: var(--color-success); }
+.share-list small { color: var(--color-success-text); }
 .modal-supply { padding: 10px 0; }
 
 #toast { position: fixed; z-index: 20; bottom: 94px; left: 50%; max-width: 80%; padding: 10px 14px; border-radius: 20px; background: var(--color-text); color: #fff; font-size: 12px; opacity: 0; transform: translate(-50%, 10px); transition: 0.25s; }

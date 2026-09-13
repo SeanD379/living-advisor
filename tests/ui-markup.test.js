@@ -86,6 +86,22 @@ test('uses contrast-safe primary text, actions, and focus styles', () => {
   assert.match(styleSource, /\.primary\s*\{[^}]*background:\s*var\(--color-primary-action\)/i);
 });
 
+test('uses opaque settlement copy and dark semantic text for status labels', () => {
+  assert.doesNotMatch(styleSource, /\.settlement p,\s*\.settlement small\s*\{[^}]*opacity:/i);
+  for (const token of [
+    '--color-expense-text: #9A5A00',
+    '--color-success-text: #16803A',
+    '--color-danger-text: #B42318',
+  ]) {
+    assert.ok(styleSource.includes(token), `style.css should define ${token}`);
+  }
+  assert.match(styleSource, /\.expense-bottom span:last-child\s*\{[^}]*color:\s*var\(--color-expense-text\)/i);
+  assert.match(styleSource, /\.done\s*\{[^}]*color:\s*var\(--color-success-text\)/i);
+  assert.match(styleSource, /\.share-list small\s*\{[^}]*color:\s*var\(--color-success-text\)/i);
+  assert.match(styleSource, /\.reset\s*\{[^}]*color:\s*var\(--color-danger-text\)/i);
+  assert.match(styleSource, /\.section-head em\s*\{[^}]*background:\s*var\(--color-danger-action\)/i);
+});
+
 test('only blocks gradients in page-level surfaces', () => {
   for (const selector of ['body', '\\.phone-shell', '\\.summary']) {
     assert.doesNotMatch(styleSource, new RegExp(`${selector}\\s*\\{[^}]*linear-gradient`, 'i'));
